@@ -15,7 +15,7 @@ License:        GPL
 Group:          Communications
 BuildRequires:  kernel-source
 # required for automatic provides computation
-BuildRequires:  pkg-config
+BuildRequires:  pkgconfig
 BuildRoot:      %{_tmppath}/%{name}-%{version}
 
 %description
