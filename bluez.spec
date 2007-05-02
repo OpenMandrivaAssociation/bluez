@@ -7,14 +7,16 @@
 Name:           bluez
 Summary:        Official Linux Bluetooth protocol stack
 Version:        3.9
-Release:        %mkrel 1
+Release:        %mkrel 2
 
 Source:         http://bluez.sourceforge.net/download/%{name}-libs-%{version}.tar.bz2
 URL:            http://bluez.sourceforge.net
 License:        GPL
 Group:          Communications
-BuildRoot:      %{_tmppath}/%{name}-%{version}-buildroot
 BuildRequires:  kernel-source
+# required for automatic provides computation
+BuildRequires:  pkg-config
+BuildRoot:      %{_tmppath}/%{name}-%{version}
 
 %description
 These are the official Bluetooth communication libraries for Linux.
@@ -55,17 +57,17 @@ applications which will use libraries from %name.
 %make
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 %makeinstall
 
-mkdir -p $RPM_BUILD_ROOT/%_includedir/bluetooth
-mv $RPM_BUILD_ROOT/%_includedir/*.h $RPM_BUILD_ROOT/%_includedir/bluetooth/
+mkdir -p %{buildroot}/%_includedir/bluetooth
+mv %{buildroot}/%_includedir/*.h %{buildroot}/%_includedir/bluetooth/
 
-mkdir -p $RPM_BUILD_ROOT%{_prefix}/%{_lib}
-mv $RPM_BUILD_ROOT/%{_lib}/pkgconfig $RPM_BUILD_ROOT%{_prefix}/%{_lib}/
+mkdir -p %{buildroot}%{_prefix}/%{_lib}
+mv %{buildroot}/%{_lib}/pkgconfig %{buildroot}%{_prefix}/%{_lib}/
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %post -n %{libname} -p /sbin/ldconfig
 %postun -n %{libname} -p /sbin/ldconfig
@@ -83,5 +85,3 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.a
 %{_prefix}/%{_lib}/pkgconfig/bluez.pc
 %{_datadir}/aclocal/%name.m4
-
-
