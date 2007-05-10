@@ -6,8 +6,8 @@
 
 Name:           bluez
 Summary:        Official Linux Bluetooth protocol stack
-Version:        3.9
-Release:        %mkrel 2
+Version:        3.10
+Release:        %mkrel 1
 
 Source:         http://bluez.sourceforge.net/download/%{name}-libs-%{version}.tar.bz2
 URL:            http://bluez.sourceforge.net
