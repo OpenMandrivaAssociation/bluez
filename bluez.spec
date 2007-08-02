@@ -13,8 +13,6 @@ Group:          Communications
 URL:            http://bluez.sourceforge.net
 Source:         http://bluez.sourceforge.net/download/%{name}-libs-%{version}.tar.bz2
 BuildRequires:  kernel-source
-# required for automatic provides computation
-BuildRequires:  pkgconfig
 BuildRoot:      %{_tmppath}/%{name}-%{version}
 
 %description
