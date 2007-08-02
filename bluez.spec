@@ -6,12 +6,12 @@
 
 Name:           bluez
 Summary:        Official Linux Bluetooth protocol stack
-Version:        3.11
+Version:        3.13
 Release:        %mkrel 1
 License:        GPL
 Group:          Communications
 URL:            http://bluez.sourceforge.net
-Source:         http://bluez.sourceforge.net/download/%{name}-libs-%{version}.tar.gz
+Source:         http://bluez.sourceforge.net/download/%{name}-libs-%{version}.tar.bz2
 BuildRequires:  kernel-source
 # required for automatic provides computation
 BuildRequires:  pkgconfig
