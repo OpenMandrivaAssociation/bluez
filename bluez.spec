@@ -56,16 +56,6 @@ applications which will use libraries from %{name}.
 rm -rf %{buildroot}
 %makeinstall_std %{buildroot}%{_libdir}/pkgconfig
 
-%if 0
-mkdir -p %{buildroot}/%_includedir/bluetooth
-mv %{buildroot}/%_includedir/*.h %{buildroot}/%_includedir/bluetooth/
-
-mkdir -p %{buildroot}%{_prefix}/%{_lib}
-mv %{buildroot}/%{_lib}/pkgconfig %{buildroot}%{_prefix}/%{_lib}/
-%endif
-%clean
-rm -rf %{buildroot}
-
 %post -n %{libname} -p /sbin/ldconfig
 %postun -n %{libname} -p /sbin/ldconfig
 
