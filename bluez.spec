@@ -66,7 +66,8 @@ mv src/.libs/libbluetooth.so.* %{buildroot}/%{_lib}
 %files -n %{devname}
 %defattr(-,root,root)
 %doc AUTHORS ChangeLog README
-%{_includedir}/bluetooth
+%dir %{_includedir}/bluetooth
+%{_includedir}/bluetooth/*.h
 %{_libdir}/*.so
 %{_libdir}/*.la
 %{_libdir}/*.a
