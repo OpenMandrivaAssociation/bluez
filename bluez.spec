@@ -5,7 +5,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	3.14
-Release:	%mkrel 4
+Release:	%mkrel 5
 License:	GPL
 Group:		Communications
 URL:		http://bluez.sourceforge.net/
@@ -46,15 +46,14 @@ applications which will use libraries from %{name}.
 %setup -q -n bluez-libs-%{version}
 
 %build
-%configure2_5x
+%configure2_5x	--libdir=/%{_lib}
 %make
 
 %install
 rm -rf %{buildroot}
 %makeinstall_std
-rm -f %{buildroot}%{_libdir}/lib*.so.*
-mkdir %{buildroot}/%{_lib}
-mv src/.libs/libbluetooth.so.* %{buildroot}/%{_lib}
+rm -rf %{buildroot}/%{_lib}/pkgconfig
+install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
 
 %post -n %{libname} -p /sbin/ldconfig
 %postun -n %{libname} -p /sbin/ldconfig
@@ -68,8 +67,8 @@ mv src/.libs/libbluetooth.so.* %{buildroot}/%{_lib}
 %doc AUTHORS ChangeLog README
 %dir %{_includedir}/bluetooth
 %{_includedir}/bluetooth/*.h
-%{_libdir}/*.so
-%{_libdir}/*.la
-%{_libdir}/*.a
+/%{_lib}/*.so
+/%{_lib}/*.la
+/%{_lib}/*.a
 %{_libdir}/pkgconfig/bluez.pc
 %{_datadir}/aclocal/%{name}.m4
