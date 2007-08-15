@@ -1,11 +1,11 @@
 %define major   2
-%define libname %mklibname %name %major
+%define libname %mklibname %{name} %major
 %define	devname	%mklibname -d %{name}
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	3.14
-Release:	%mkrel 3
+Release:	%mkrel 4
 License:	GPL
 Group:		Communications
 URL:		http://bluez.sourceforge.net/
@@ -46,7 +46,7 @@ applications which will use libraries from %{name}.
 %setup -q -n bluez-libs-%{version}
 
 %build
-%configure2_5x	-includedir=%{_includedir}/bluetooth
+%configure2_5x
 %make
 
 %install
