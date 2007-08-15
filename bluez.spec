@@ -7,7 +7,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	3.14
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPL
 Group:		Communications
 URL:		http://bluez.sourceforge.net/
@@ -39,6 +39,7 @@ Provides:	lib%{name}-sdp-devel, lib%{name}-sdp2-devel
 Obsoletes:	lib%{name}-sdp-devel, lib%{name}-sdp2-devel
 Provides:	%{name}-sdp-devel
 Obsoletes:	%{name}-sdp-devel
+Obsoletes:	%{libname}-devel
 
 %description -n %{devname}
 This package contains the headers that programmers will need to develop
@@ -61,7 +62,7 @@ rm -rf %{buildroot}
 
 %files -n %{libname}
 %defattr(-,root,root)
-%{_libdir}/*.so.*
+%{_libdir}/*.so.%{major}*
 
 %files -n %{devname}
 %defattr(-,root,root)
