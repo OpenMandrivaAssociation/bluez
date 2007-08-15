@@ -61,7 +61,7 @@ mv src/.libs/libbluetooth.so.* %{buildroot}/%{_lib}
 
 %files -n %{libname}
 %defattr(-,root,root)
-/%{_lib}/*.so..%{major}*
+/%{_lib}/lib*.so.%{major}*
 
 %files -n %{devname}
 %defattr(-,root,root)
