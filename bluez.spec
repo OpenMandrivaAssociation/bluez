@@ -8,6 +8,7 @@ Version:	3.26
 Release:	%mkrel 1
 License:	GPLv2+
 Group:		Communications
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL:		http://bluez.sourceforge.net/
 Source0:	http://bluez.sourceforge.net/download/%{name}-libs-%{version}.tar.gz
 
