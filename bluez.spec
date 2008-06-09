@@ -56,8 +56,12 @@ rm -rf %{buildroot}
 rm -rf %{buildroot}/%{_lib}/pkgconfig
 install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
 
+%if %mdkversion < 200900
 %post -n %{libname} -p /sbin/ldconfig
+%endif
+%if %mdkversion < 200900
 %postun -n %{libname} -p /sbin/ldconfig
+%endif
 
 %files -n %{libname}
 %defattr(-,root,root)
