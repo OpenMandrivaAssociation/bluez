@@ -90,6 +90,7 @@ fi
 %defattr(-,root,root)
 %{_bindir}/*
 %{_sbindir}/*
+/sbin/hidd
 /sbin/udev_bluetooth_helper
 %{_mandir}/man?/*
 %dir %{_sysconfdir}/bluetooth
@@ -206,7 +207,15 @@ FORCE_AUTOCONF_2_5=1 AUTOMAKE="automake --add-missing" autoreconf
 # fix mdv bug 35444
 %define _localstatedir %{_var}
 
-%configure2_5x	--libdir=/%{_lib} --enable-cups --enable-hid2hci --enable-dfutool --enable-tools --enable-bccmd --enable-gstreamer --enable-hidd --enable-pand --enable-dund
+%configure2_5x	--libdir=/%{_lib} --enable-cups \
+                --enable-hid2hci \
+                --enable-dfutool \
+                --enable-tools \
+                --enable-bccmd \
+                --enable-gstreamer \
+                --enable-hidd \
+                --enable-pand \
+                --enable-dund
 
 %make
 
@@ -240,8 +249,8 @@ fi
 EOF
 chmod 755 %{buildroot}%{_sysconfdir}/X11/xinit.d/%{xinit_level}%{name}
 
-#mkdir -p %{buildroot}/sbin
-#cp %{buildroot}%{_bindir}/hidd %{buildroot}/sbin/
+mkdir -p %{buildroot}/sbin
+cp %{buildroot}%{_bindir}/hidd %{buildroot}/sbin/
 #cp %{buildroot}%{_sbindir}/hcid %{buildroot}/sbin/
 cp test/test-* %{buildroot}%{_bindir}
 #cp hcid/dbus-test %{buildroot}%{_bindir}/bluez-dbus-test
