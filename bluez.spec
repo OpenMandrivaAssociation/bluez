@@ -96,12 +96,11 @@ fi
 /sbin/udev_bluetooth_helper
 %{_mandir}/man?/*
 %dir %{_sysconfdir}/bluetooth
-%{_sysconfdir}/bluetooth/main.conf
-%{_sysconfdir}/bluetooth/rfcomm.conf
-%{_sysconfdir}/bluetooth/audio.conf
-%{_sysconfdir}/bluetooth/pin
+%config(noreplace) %{_sysconfdir}/rc.d/init.d/*
+%config(noreplace) %{_sysconfdir}/sysconfig/*
+%config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
+%config(noreplace) %{_sysconfdir}/bluetooth
 %{_sysconfdir}/bash_completion.d/bluez
-%{_sysconfdir}/dbus-1/system.d/bluetooth.conf
 /lib/udev/bluetooth_serial
 /%_lib/bluetooth/plugins/*
 %{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
