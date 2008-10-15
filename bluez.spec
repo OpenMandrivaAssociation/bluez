@@ -7,7 +7,7 @@
 Name:		    bluez
 Summary:	    Official Linux Bluetooth protocol stack
 Version:	    4.13
-Release:	    %mkrel 1
+Release:	    %mkrel 2
 License:	    GPLv2+
 Group:		    Communications
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -112,6 +112,7 @@ fi
 Summary:        CUPS printer backend for Bluetooth printers
 Group:          System/Servers
 Requires:       cups
+Obsoletes:      %name-utils-cups
 
 %description    cups
 This package contains the CUPS backend for Bluetooth printers.
@@ -125,6 +126,7 @@ This package contains the CUPS backend for Bluetooth printers.
 %package gstreamer
 Summary: Gstreamer support for SBC audio format
 Group: Sound
+Obsoletes:      %name-utils-gstreamer
 
 %description gstreamer
 This package contains gstreamer plugins for the Bluetooth SBC audio format
@@ -138,6 +140,7 @@ This package contains gstreamer plugins for the Bluetooth SBC audio format
 %package alsa
 Summary: ALSA support for Bluetooth audio devices
 Group: Sound
+Obsoletes:      %name-utils-alsa
 
 %description alsa
 This package contains ALSA support for Bluetooth audio devices
