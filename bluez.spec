@@ -51,6 +51,7 @@ Provides:       bluez-pan
 Provides:       bluez-pan
 Provides:       bluez-hciemu 
 Provides:       bluez-hciemu
+Provides:       bluez-utils
 Suggests:       bluez-firmware
 
 Obsoletes:      %name-utils
