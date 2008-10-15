@@ -92,6 +92,7 @@ fi
 %{_bindir}/*
 %{_sbindir}/*
 /sbin/hidd
+/sbin/bluetoothd
 /sbin/udev_bluetooth_helper
 %{_mandir}/man?/*
 %dir %{_sysconfdir}/bluetooth
@@ -233,6 +234,12 @@ EOF
 
 chmod 600 %{buildroot}%{_sysconfdir}/bluetooth/pin
 
+rm -f %{buildroot}/etc/default/bluetooth %{buildroot}/etc/init.d/bluetooth
+for a in bluetooth dund hidd pand ; do
+        install -D -m0755 $RPM_SOURCE_DIR/$a.init %{buildroot}%{_sysconfdir}/rc.d/init.d/$a
+        install -D -m0644 $RPM_SOURCE_DIR/$a.conf %{buildroot}%{_sysconfdir}/sysconfig/$a
+done
+
 rm -rf %{buildroot}/%{_lib}/pkgconfig
 install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
 
@@ -255,7 +262,7 @@ chmod 755 %{buildroot}%{_sysconfdir}/X11/xinit.d/%{xinit_level}%{name}
 
 mkdir -p %{buildroot}/sbin
 cp %{buildroot}%{_bindir}/hidd %{buildroot}/sbin/
-#cp %{buildroot}%{_sbindir}/hcid %{buildroot}/sbin/
+cp %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin/
 cp test/test-* %{buildroot}%{_bindir}
 #cp hcid/dbus-test %{buildroot}%{_bindir}/bluez-dbus-test
 
