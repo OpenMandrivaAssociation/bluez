@@ -6,13 +6,13 @@
 
 Name:		    bluez
 Summary:	    Official Linux Bluetooth protocol stack
-Version:	    4.13
-Release:	    %mkrel 3
+Version:	    4.14
+Release:	    %mkrel 1
 License:	    GPLv2+
 Group:		    Communications
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL:		    http://bluez.sourceforge.net/
-Source0:	    http://bluez.sourceforge.net/download/%{name}-%{version}.tar.gz
+Source0:	    http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
 Source1:        bluetooth.init
 Source2:        pand.init
 Source3:        dund.init
