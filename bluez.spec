@@ -106,6 +106,7 @@ fi
 %{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
 %{_sysconfdir}/udev/rules.d/60-bluetooth.rules
 %{_sysconfdir}/X11/xinit.d/%{xinit_level}bluez
+%{_localstatedir}/lib/bluetooth
 
 #--------------------------------------------------------------------
 
@@ -278,6 +279,8 @@ install -m0644 audio/audio.conf %{buildroot}%{_sysconfdir}/bluetooth/
 # remove unpackaged files
 rm -f $RPM_BUILD_ROOT/%{_libdir}/*/*.la
 rm -f $RPM_BUILD_ROOT/%{_lib}/*/*.la
+
+install -d -m0755 $RPM_BUILD_ROOT/%{_localstatedir}/lib/bluetooth
 
 %clean
 rm -fr %{buildroot}
