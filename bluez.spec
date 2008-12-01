@@ -1,5 +1,3 @@
-%define xinit_level 80
-
 %define major   3
 %define libname %mklibname %{name} %major
 %define	devname	%mklibname -d %{name}
@@ -7,7 +5,7 @@
 Name:		    bluez
 Summary:	    Official Linux Bluetooth protocol stack
 Version:	    4.17
-Release:	    %mkrel 1
+Release:	    %mkrel 2
 License:	    GPLv2+
 Group:		    Communications
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -105,7 +103,6 @@ fi
 /%_lib/bluetooth/plugins/*
 %{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
 %{_sysconfdir}/udev/rules.d/60-bluetooth.rules
-%{_sysconfdir}/X11/xinit.d/%{xinit_level}bluez
 %{_localstatedir}/lib/bluetooth
 
 #--------------------------------------------------------------------
@@ -249,16 +246,6 @@ install -D -m0755 cups/bluetooth ${RPM_BUILD_ROOT}/usr/lib/cups/backend/bluetoot
 
 install -D -m0755 scripts/bluetooth.rules ${RPM_BUILD_ROOT}/%{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
 install -D -m0755 scripts/bluetooth_serial ${RPM_BUILD_ROOT}/lib/udev/bluetooth_serial
-
-mkdir -p  %{buildroot}%{_sysconfdir}/X11/xinit.d
-cat << EOF > %{buildroot}%{_sysconfdir}/X11/xinit.d/%{xinit_level}%{name}
-#!/bin/sh
-SESSION=\$1
-if [ "\${SESSION}" != "KDE" ]; then
-    exec %{_bindir}/passkey-agent --default /bin/bluepin
-fi
-EOF
-chmod 755 %{buildroot}%{_sysconfdir}/X11/xinit.d/%{xinit_level}%{name}
 
 mkdir -p %{buildroot}/sbin
 cp %{buildroot}%{_bindir}/hidd %{buildroot}/sbin/
