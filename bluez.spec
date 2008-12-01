@@ -5,7 +5,7 @@
 Name:		    bluez
 Summary:	    Official Linux Bluetooth protocol stack
 Version:	    4.17
-Release:	    %mkrel 2
+Release:	    %mkrel 3
 License:	    GPLv2+
 Group:		    Communications
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -27,9 +27,6 @@ Source12:       %{name}.bash-completion
 Patch0:         bluez-defaultconf.patch
 # (fc) 2.25-4mdk fix cups backend location for x86-64
 Patch3:         bluez-2.25-fixcups.patch
-# kmobiletools backport of standard auth by pin exec prog
-# http://kmobiletools.org/files/bluez-pin-exec-patch-r2.diff.bz2
-Patch4:         bluez-3.9-pin-exec.patch
 BuildRequires:  dbus-devel 
 BuildRequires:  flex 
 BuildRequires:  bison 
@@ -200,7 +197,6 @@ applications which will use libraries from %{name}.
 %setup -q -n %name-%{version}
 #%patch0 -p1 -b .defaultconf
 %patch3 -p1 -b .fixcups
-#%patch4 -p1 -b .auth
 
 #needed by patch3
 FORCE_AUTOCONF_2_5=1 AUTOMAKE="automake --add-missing" autoreconf
