@@ -5,7 +5,7 @@
 Name:		    bluez
 Summary:	    Official Linux Bluetooth protocol stack
 Version:	    4.22
-Release:	    %mkrel 1
+Release:	    %mkrel 2
 License:	    GPLv2+
 Group:		    Communications
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
