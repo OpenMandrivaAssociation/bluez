@@ -1,11 +1,11 @@
 %define major   3
-%define libname %mklibname %{name} %major
+%define libname %mklibname %{name} %{major}
 %define	devname	%mklibname -d %{name}
 
 Name:		    bluez
 Summary:	    Official Linux Bluetooth protocol stack
-Version:	    4.22
-Release:	    %mkrel 2
+Version:	    4.25
+Release:	    %mkrel 1
 License:	    GPLv2+
 Group:		    Communications
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -33,7 +33,6 @@ BuildRequires:  bison
 BuildRequires:  libusb-devel
 BuildRequires:  libalsa-devel 
 BuildRequires:  udev-tools 
-BuildRequires:  automake >= 1.9
 BuildRequires:  libgstreamer0.10-plugins-base-devel 
 BuildRequires:  gstreamer0.10-devel hal-devel
 BuildRequires:  expat-devel
