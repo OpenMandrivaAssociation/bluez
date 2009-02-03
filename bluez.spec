@@ -196,6 +196,7 @@ applications which will use libraries from %{name}.
 %patch3 -p1 -b .fixcups
 
 #needed by patch3
+libtoolize --force
 FORCE_AUTOCONF_2_5=1 AUTOMAKE="automake --add-missing" autoreconf
 
 %build
