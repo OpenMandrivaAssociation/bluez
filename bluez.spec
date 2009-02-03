@@ -5,7 +5,7 @@
 Name:		    bluez
 Summary:	    Official Linux Bluetooth protocol stack
 Version:	    4.28
-Release:	    %mkrel 1
+Release:	    %mkrel 2
 License:	    GPLv2+
 Group:		    Communications
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -22,7 +22,6 @@ Source8:        hidd.conf
 Source9:        rfcomm.conf
 Source10:       hidd.hotplug
 Source11:       hidd.udev.rules
-Source12:       %{name}.bash-completion
 # (fc) 2.8-2mdk change default configuration (Fedora)
 Patch0:         bluez-defaultconf.patch
 # (fc) 2.25-4mdk fix cups backend location for x86-64
@@ -94,7 +93,6 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/*
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
 %config(noreplace) %{_sysconfdir}/bluetooth
-%{_sysconfdir}/bash_completion.d/bluez
 /lib/udev/bluetooth_serial
 /%_lib/bluetooth/plugins/*
 %{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
@@ -250,10 +248,6 @@ cp test/test-* %{buildroot}%{_bindir}
 
 install -D -m0755 %{SOURCE10} %{buildroot}/sbin/udev_bluetooth_helper
 install -D -m0644 %{SOURCE11} %{buildroot}%{_sysconfdir}/udev/rules.d/60-bluetooth.rules
-
-# bash completion
-install -d -m 755 %{buildroot}%{_sysconfdir}/bash_completion.d
-install -m 644 %{SOURCE12} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 #install more config files
 install -m0644 audio/audio.conf %{buildroot}%{_sysconfdir}/bluetooth/
