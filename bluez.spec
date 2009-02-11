@@ -4,8 +4,8 @@
 
 Name:		    bluez
 Summary:	    Official Linux Bluetooth protocol stack
-Version:	    4.28
-Release:	    %mkrel 2
+Version:	    4.29
+Release:	    %mkrel 1
 License:	    GPLv2+
 Group:		    Communications
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -256,10 +256,10 @@ install -m0644 network/network.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
 
 # remove unpackaged files
-rm -f $RPM_BUILD_ROOT/%{_libdir}/*/*.la
-rm -f $RPM_BUILD_ROOT/%{_lib}/*/*.la
+rm -f %{buildroot}/%{_libdir}/*/*.la
+rm -f %{buildroot}/%{_lib}/*/*.la
 
-install -d -m0755 $RPM_BUILD_ROOT/%{_localstatedir}/lib/bluetooth
+install -d -m0755 %{buildroot}/%{_localstatedir}/lib/bluetooth
 
 %clean
 rm -fr %{buildroot}
