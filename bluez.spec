@@ -252,6 +252,8 @@ install -D -m0644 %{SOURCE11} %{buildroot}%{_sysconfdir}/udev/rules.d/60-bluetoo
 
 #install more config files
 install -m0644 audio/audio.conf %{buildroot}%{_sysconfdir}/bluetooth/
+install -m0644 network/network.conf %{buildroot}%{_sysconfdir}/bluetooth/
+install -m0644 input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
 
 # remove unpackaged files
 rm -f $RPM_BUILD_ROOT/%{_libdir}/*/*.la
