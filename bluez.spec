@@ -1,53 +1,53 @@
-%define major   3
-%define libname %mklibname %{name} %{major}
+%define major	3
+%define libname	%mklibname %{name} %{major}
 %define	devname	%mklibname -d %{name}
 
-Name:		    bluez
-Summary:	    Official Linux Bluetooth protocol stack
-Version:	    4.29
-Release:	    %mkrel 1
-License:	    GPLv2+
-Group:		    Communications
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-URL:		    http://bluez.sourceforge.net/
-Source0:	    http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
-Source1:        bluetooth.init
-Source2:        pand.init
-Source3:        dund.init
-Source4:        hidd.init
-Source5:        bluetooth.conf
-Source6:        pand.conf
-Source7:        dund.conf
-Source8:        hidd.conf
-Source9:        rfcomm.conf
-Source10:       hidd.hotplug
-Source11:       hidd.udev.rules
+Name:		bluez
+Summary:	Official Linux Bluetooth protocol stack
+Version:	4.30
+Release:	%mkrel 1
+License:	GPLv2+
+Group:		Communications
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+URL:		http://bluez.sourceforge.net/
+Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
+Source1:	bluetooth.init
+Source2:	pand.init
+Source3:	dund.init
+Source4:	hidd.init
+Source5:	bluetooth.conf
+Source6:	pand.conf
+Source7:	dund.conf
+Source8:	hidd.conf
+Source9:	rfcomm.conf
+Source10:	hidd.hotplug
+Source11:	hidd.udev.rules
 # (fc) 2.8-2mdk change default configuration (Fedora)
-Patch0:         bluez-defaultconf.patch
+Patch0:		bluez-defaultconf.patch
 # (fc) 2.25-4mdk fix cups backend location for x86-64
-Patch3:         bluez-2.25-fixcups.patch
-BuildRequires:  dbus-devel 
-BuildRequires:  flex 
-BuildRequires:  bison 
-BuildRequires:  libusb-devel
-BuildRequires:  libalsa-devel 
-BuildRequires:  udev-tools 
-BuildRequires:  libgstreamer0.10-plugins-base-devel 
-BuildRequires:  gstreamer0.10-devel hal-devel
-BuildRequires:  expat-devel
-Requires:       python 
-Requires:       bluez-pin 
-Requires:       obex-data-server
-Provides:       bluez-sdp 
-Provides:       bluez-sdp
-Provides:       bluez-pan 
-Provides:       bluez-pan
-Provides:       bluez-hciemu 
-Provides:       bluez-hciemu
-Provides:       bluez-utils
-Suggests:       bluez-firmware
+Patch3:		bluez-2.25-fixcups.patch
+BuildRequires:	dbus-devel 
+BuildRequires:	flex 
+BuildRequires:	bison 
+BuildRequires:	libusb-devel
+BuildRequires:	libalsa-devel 
+BuildRequires:	udev-tools 
+BuildRequires:	libgstreamer0.10-plugins-base-devel 
+BuildRequires:	gstreamer0.10-devel hal-devel
+BuildRequires:	expat-devel
+Requires:	python 
+Requires:	bluez-pin 
+Requires:	obex-data-server
+Provides:	bluez-sdp 
+Provides:	bluez-sdp
+Provides:	bluez-pan 
+Provides:	bluez-pan
+Provides:	bluez-hciemu 
+Provides:	bluez-hciemu
+Provides:	bluez-utils
+Suggests:	bluez-firmware
 
-Obsoletes:      %name-utils
+Obsoletes:	%name-utils
 
 %description
 These are the official Bluetooth communication libraries for Linux.
@@ -175,7 +175,7 @@ Provides:	%{name}-sdp-devel
 Obsoletes:	%{name}-sdp-devel
 Obsoletes:	%{libname}-devel
 
-%description -n %{devname}
+%description -n	%{devname}
 This package contains the headers that programmers will need to develop
 applications which will use libraries from %{name}.
 
