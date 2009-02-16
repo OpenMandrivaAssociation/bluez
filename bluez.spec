@@ -5,7 +5,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.30
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -126,7 +126,7 @@ This package contains gstreamer plugins for the Bluetooth SBC audio format
 
 %files gstreamer
 %defattr(-, root, root)
-/%{_lib}/gstreamer-*/*.so
+%{_libdir}/gstreamer-*/*.so
 
 #--------------------------------------------------------------------
 
@@ -217,7 +217,8 @@ FORCE_AUTOCONF_2_5=1 AUTOMAKE="automake --add-missing" autoreconf
 
 %install
 rm -rf %{buildroot}
-%makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
+%makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev gstreamerdir=%{_libdir}/gstreamer-0.10
+
 
 cat << EOF > %{buildroot}%{_sysconfdir}/bluetooth/pin
 1234
