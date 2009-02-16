@@ -217,7 +217,10 @@ FORCE_AUTOCONF_2_5=1 AUTOMAKE="automake --add-missing" autoreconf
 
 %install
 rm -rf %{buildroot}
-%makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev gstreamerdir=%{_libdir}/gstreamer-0.10
+%makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev 
+
+mkdir -p $RPM_BUILD_ROOT%{_libdir}
+mv $RPM_BUILD_ROOT/%{_lib}/gstreamer-0.10 $RPM_BUILD_ROOT%{_libdir}
 
 
 cat << EOF > %{buildroot}%{_sysconfdir}/bluetooth/pin
