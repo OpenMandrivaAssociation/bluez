@@ -250,7 +250,7 @@ cp %{buildroot}%{_bindir}/hidd %{buildroot}/sbin/
 cp %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin/
 cp test/test-* %{buildroot}%{_bindir}
 #cp hcid/dbus-test %{buildroot}%{_bindir}/bluez-dbus-test
-
+cp ./test/simple-agent %{buildroot}%{_bindir}/simple-agent
 install -D -m0755 %{SOURCE10} %{buildroot}/sbin/udev_bluetooth_helper
 install -D -m0644 %{SOURCE11} %{buildroot}%{_sysconfdir}/udev/rules.d/60-bluetooth.rules
 
