@@ -5,7 +5,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.30
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -93,6 +93,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/*
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
 %config(noreplace) %{_sysconfdir}/bluetooth
+%config(noreplace) %{_datadir}/dbus-1/system-services/org.bluez.service
 /lib/udev/bluetooth_serial
 /%_lib/bluetooth/plugins/*
 %{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
@@ -229,8 +230,8 @@ EOF
 
 chmod 600 %{buildroot}%{_sysconfdir}/bluetooth/pin
 
-rm -f %{buildroot}/etc/default/bluetooth %{buildroot}/etc/init.d/bluetooth
-for a in bluetooth dund hidd pand ; do
+#rm -f %{buildroot}/etc/default/bluetooth %{buildroot}/etc/init.d/bluetooth
+for a in dund hidd pand ; do
         install -D -m0755 $RPM_SOURCE_DIR/$a.init %{buildroot}%{_sysconfdir}/rc.d/init.d/$a
         install -D -m0644 $RPM_SOURCE_DIR/$a.conf %{buildroot}%{_sysconfdir}/sysconfig/$a
 done
@@ -248,9 +249,10 @@ install -D -m0755 scripts/bluetooth_serial ${RPM_BUILD_ROOT}/lib/udev/bluetooth_
 mkdir -p %{buildroot}/sbin
 cp %{buildroot}%{_bindir}/hidd %{buildroot}/sbin/
 cp %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin/
+
 cp test/test-* %{buildroot}%{_bindir}
-#cp hcid/dbus-test %{buildroot}%{_bindir}/bluez-dbus-test
-cp ./test/simple-agent %{buildroot}%{_bindir}/simple-agent
+cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
+
 install -D -m0755 %{SOURCE10} %{buildroot}/sbin/udev_bluetooth_helper
 install -D -m0644 %{SOURCE11} %{buildroot}%{_sysconfdir}/udev/rules.d/60-bluetooth.rules
 
@@ -258,6 +260,9 @@ install -D -m0644 %{SOURCE11} %{buildroot}%{_sysconfdir}/udev/rules.d/60-bluetoo
 install -m0644 audio/audio.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 network/network.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
+
+mkdir -p %buildroot%{_datadir}/dbus-1/system-services/
+install -D -m0644 %{SOURCE11} %{buildroot}%{_datadir}/dbus-1/system-services/org.bluez.service
 
 # remove unpackaged files
 rm -f %{buildroot}/%{_libdir}/*/*.la
