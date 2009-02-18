@@ -230,8 +230,8 @@ EOF
 
 chmod 600 %{buildroot}%{_sysconfdir}/bluetooth/pin
 
-#rm -f %{buildroot}/etc/default/bluetooth %{buildroot}/etc/init.d/bluetooth
-for a in dund hidd pand ; do
+rm -f %{buildroot}/etc/default/bluetooth %{buildroot}/etc/init.d/bluetooth
+for a in bluetooth dund hidd pand ; do
         install -D -m0755 $RPM_SOURCE_DIR/$a.init %{buildroot}%{_sysconfdir}/rc.d/init.d/$a
         install -D -m0644 $RPM_SOURCE_DIR/$a.conf %{buildroot}%{_sysconfdir}/sysconfig/$a
 done
