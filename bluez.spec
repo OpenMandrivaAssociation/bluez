@@ -4,7 +4,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	4.31
+Version:	4.32
 Release:	%mkrel 1
 License:	GPLv2+
 Group:		Communications
@@ -220,8 +220,8 @@ FORCE_AUTOCONF_2_5=1 AUTOMAKE="automake --add-missing" autoreconf
 rm -rf %{buildroot}
 %makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev 
 
-mkdir -p $RPM_BUILD_ROOT%{_libdir}
-mv $RPM_BUILD_ROOT/%{_lib}/gstreamer-0.10 $RPM_BUILD_ROOT%{_libdir}
+mkdir -p %{buildroot}%{_libdir}
+mv %{buildroot}/%{_lib}/gstreamer-0.10 %{buildroot}%{_libdir}
 
 
 cat << EOF > %{buildroot}%{_sysconfdir}/bluetooth/pin
@@ -240,11 +240,11 @@ rm -rf %{buildroot}/%{_lib}/pkgconfig
 install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
 
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
-rm -rf ${RPM_BUILD_ROOT}%{_libdir}/cups
+rm -rf %{buildroot}%{_libdir}/cups
 install -D -m0755 cups/bluetooth ${RPM_BUILD_ROOT}/usr/lib/cups/backend/bluetooth
 
-install -D -m0755 scripts/bluetooth.rules ${RPM_BUILD_ROOT}/%{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
-install -D -m0755 scripts/bluetooth_serial ${RPM_BUILD_ROOT}/lib/udev/bluetooth_serial
+install -D -m0755 scripts/bluetooth.rules %{buildroot}/%{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
+install -D -m0755 scripts/bluetooth_serial %{buildroot}/lib/udev/bluetooth_serial
 
 mkdir -p %{buildroot}/sbin
 cp %{buildroot}%{_bindir}/hidd %{buildroot}/sbin/
