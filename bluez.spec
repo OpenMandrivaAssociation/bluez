@@ -243,7 +243,7 @@ install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
 rm -rf %{buildroot}%{_libdir}/cups
 install -D -m0755 cups/bluetooth ${RPM_BUILD_ROOT}/usr/lib/cups/backend/bluetooth
 
-install -D -m0755 scripts/bluetooth.rules %{buildroot}/%{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
+install -D -m0644 scripts/bluetooth.rules %{buildroot}/%{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
 install -D -m0755 scripts/bluetooth_serial %{buildroot}/lib/udev/bluetooth_serial
 
 mkdir -p %{buildroot}/sbin
