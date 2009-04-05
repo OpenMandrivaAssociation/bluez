@@ -5,7 +5,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.33
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -262,7 +262,7 @@ install -m0644 network/network.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
 
 mkdir -p %buildroot%{_datadir}/dbus-1/system-services/
-install -D -m0644 %{SOURCE11} %{buildroot}%{_datadir}/dbus-1/system-services/org.bluez.service
+install -D -m0644 src/bluetooth.conf %{buildroot}%{_datadir}/dbus-1/system-services/org.bluez.service
 
 # remove unpackaged files
 rm -f %{buildroot}/%{_libdir}/*/*.la
