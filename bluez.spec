@@ -5,7 +5,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.33
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -38,16 +38,14 @@ BuildRequires:	expat-devel
 Requires:	python 
 Requires:	bluez-pin 
 Requires:	obex-data-server
-Provides:	bluez-sdp 
 Provides:	bluez-sdp
-Provides:	bluez-pan 
+Obsoletes:	bluez-sdp < 4.0
 Provides:	bluez-pan
-Provides:	bluez-hciemu 
 Provides:	bluez-hciemu
+Obsoletes:	bluez-hciemu
 Provides:	bluez-utils
+Obsoletes:	bluez-utils < 4.0
 Suggests:	bluez-firmware
-
-Obsoletes:	%name-utils
 
 %description
 These are the official Bluetooth communication libraries for Linux.
@@ -149,9 +147,6 @@ This package contains ALSA support for Bluetooth audio devices
 %package -n	%{libname}
 Summary:	Official Linux Bluetooth protocol stack
 Group:		System/Libraries
-Provides:	%{name} = %{version}-%{release}
-Provides:	%{name}-sdp
-Obsoletes:	%{name}-sdp
 Provides:	lib%{name}-sdp2
 Obsoletes:	lib%{name}-sdp2
 
