@@ -5,7 +5,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.39
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -139,7 +139,7 @@ This package contains ALSA support for Bluetooth audio devices
 
 %files alsa
 %defattr(-, root, root)
-/%{_lib}/alsa-lib/*.so
+%{_libdir}/alsa-lib/*.so
 %{_sysconfdir}/alsa/bluetooth.conf
 
 #--------------------------------------------------------------------
@@ -258,6 +258,9 @@ install -m0644 input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
 
 mkdir -p %buildroot%{_datadir}/dbus-1/system-services/
 install -D -m0644 src/bluetooth.conf %{buildroot}%{_datadir}/dbus-1/system-services/org.bluez.service
+
+%__mkdir -p %{buildroot}%{_libdir}/alsa-lib/
+%__mv %{buildroot}/%{_lib}/alsa-lib/*.so %{buildroot}%{_libdir}/alsa-lib/
 
 # remove unpackaged files
 rm -f %{buildroot}/%{_libdir}/*/*.la
