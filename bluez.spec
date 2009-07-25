@@ -4,17 +4,17 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	4.39
-Release:	%mkrel 2
+Version:	4.46
+Release:	%mkrel 1
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL:		http://bluez.sourceforge.net/
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
-Source1:	bluetooth.init
-Source2:	pand.init
-Source3:	dund.init
-Source4:	hidd.init
+#Source1:	bluetooth.init
+#Source2:	pand.init
+#Source3:	dund.init
+#Source4:	hidd.init
 Source5:	bluetooth.conf
 Source6:	pand.conf
 Source7:	dund.conf
@@ -59,16 +59,16 @@ if [ "$1" = "2" -a -d %{_var}/lib/lib/bluetooth ]; then
  rmdir %{_var}/lib/lib/ > /dev/null 2>&1 || exit 0
 fi
 
-%_post_service bluetooth
-%_post_service dund
-%_post_service hidd
-%_post_service pand
+##%_post_service bluetooth
+##%_post_service dund
+##%_post_service hidd
+##%_post_service pand
 
 %preun
-%_preun_service bluetooth
-%_preun_service dund
-%_preun_service hidd
-%_preun_service pand
+##%_preun_service bluetooth
+##%_preun_service dund
+##%_preun_service hidd
+##%_preun_service pand
 
 %postun
 if [ "$1" = "0" ]; then
@@ -87,7 +87,7 @@ fi
 /sbin/udev_bluetooth_helper
 %{_mandir}/man?/*
 %dir %{_sysconfdir}/bluetooth
-%config(noreplace) %{_sysconfdir}/rc.d/init.d/*
+##%config(noreplace) %{_sysconfdir}/rc.d/init.d/*
 %config(noreplace) %{_sysconfdir}/sysconfig/*
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
 %config(noreplace) %{_sysconfdir}/bluetooth
@@ -95,6 +95,8 @@ fi
 /lib/udev/bluetooth_serial
 /%_lib/bluetooth/plugins/*
 %{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
+%{_sysconfdir}/udev/rules.d/97-bluetooth-hid2hci.rules
+%{_sysconfdir}/udev/rules.d/97-bluetooth.rules
 %{_sysconfdir}/udev/rules.d/60-bluetooth.rules
 %{_localstatedir}/lib/bluetooth
 
@@ -227,7 +229,7 @@ chmod 600 %{buildroot}%{_sysconfdir}/bluetooth/pin
 
 rm -f %{buildroot}/etc/default/bluetooth %{buildroot}/etc/init.d/bluetooth
 for a in bluetooth dund hidd pand ; do
-        install -D -m0755 $RPM_SOURCE_DIR/$a.init %{buildroot}%{_sysconfdir}/rc.d/init.d/$a
+        #install -D -m0755 $RPM_SOURCE_DIR/$a.init %{buildroot}%{_sysconfdir}/rc.d/init.d/$a
         install -D -m0644 $RPM_SOURCE_DIR/$a.conf %{buildroot}%{_sysconfdir}/sysconfig/$a
 done
 
@@ -236,9 +238,11 @@ install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
 
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
 rm -rf %{buildroot}%{_libdir}/cups
-install -D -m0755 cups/bluetooth ${RPM_BUILD_ROOT}/usr/lib/cups/backend/bluetooth
+install -D -m0755 cups/bluetooth %{buildroot}/usr/lib/cups/backend/bluetooth
 
 install -D -m0644 scripts/bluetooth.rules %{buildroot}/%{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
+install -D -m0644 scripts/bluetooth.rules %{buildroot}/%{_sysconfdir}/udev/rules.d/97-bluetooth-hid2hci.rules
+install -D -m0644 scripts/bluetooth.rules %{buildroot}/%{_sysconfdir}/udev/rules.d/97-bluetooth.rules
 install -D -m0755 scripts/bluetooth_serial %{buildroot}/lib/udev/bluetooth_serial
 
 mkdir -p %{buildroot}/sbin
