@@ -5,7 +5,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.46
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -75,7 +75,7 @@ if [ "$1" = "0" ]; then
   update-alternatives --remove bluepin /usr/bin/bluepin
 fi
 
-%triggerun -- bluez < 4.46-2mdv
+%triggerin -- bluez < 4.46-4mdv
 /sbin/chkconfig --del bluetooth
 /sbin/chkconfig --del dund
 /sbin/chkconfig --del hidd
