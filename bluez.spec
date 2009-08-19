@@ -4,7 +4,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	4.47
+Version:	4.48
 Release:	%mkrel 1
 License:	GPLv2+
 Group:		Communications
@@ -22,8 +22,6 @@ Source8:	hidd.conf
 Source9:	rfcomm.conf
 Source10:	hidd.hotplug
 Source11:	hidd.udev.rules
-# (fc) 2.8-2mdk change default configuration (Fedora)
-Patch0:		bluez-defaultconf.patch
 # (fc) 2.25-4mdk fix cups backend location for x86-64
 Patch3:		bluez-2.25-fixcups.patch
 BuildRequires:	dbus-devel 
@@ -96,7 +94,7 @@ fi
 %config(noreplace) %{_sysconfdir}/bluetooth
 %config(noreplace) %{_datadir}/dbus-1/system-services/org.bluez.service
 /lib/udev/bluetooth_serial
-/%_lib/bluetooth/plugins/*
+#/%_lib/bluetooth/plugins/*
 %{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
 %{_sysconfdir}/udev/rules.d/97-bluetooth-hid2hci.rules
 %{_sysconfdir}/udev/rules.d/97-bluetooth.rules
@@ -193,7 +191,6 @@ applications which will use libraries from %{name}.
 
 %prep
 %setup -q -n %name-%{version}
-#%patch0 -p1 -b .defaultconf
 %patch3 -p1 -b .fixcups
 
 #needed by patch3
@@ -232,8 +229,7 @@ chmod 600 %{buildroot}%{_sysconfdir}/bluetooth/pin
 
 rm -f %{buildroot}/etc/default/bluetooth %{buildroot}/etc/init.d/bluetooth
 for a in bluetooth dund hidd pand ; do
-        #install -D -m0755 $RPM_SOURCE_DIR/$a.init %{buildroot}%{_sysconfdir}/rc.d/init.d/$a
-        install -D -m0644 $RPM_SOURCE_DIR/$a.conf %{buildroot}%{_sysconfdir}/sysconfig/$a
+         install -D -m0644 $RPM_SOURCE_DIR/$a.conf %{buildroot}%{_sysconfdir}/sysconfig/$a
 done
 
 rm -rf %{buildroot}/%{_lib}/pkgconfig
