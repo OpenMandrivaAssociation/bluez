@@ -5,7 +5,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.48
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -15,7 +15,7 @@ Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
 #Source2:	pand.init
 #Source3:	dund.init
 #Source4:	hidd.init
-Source5:	bluetooth.conf
+#Source5:	bluetooth.conf
 Source6:	pand.conf
 Source7:	dund.conf
 Source8:	hidd.conf
@@ -202,7 +202,6 @@ FORCE_AUTOCONF_2_5=1 AUTOMAKE="automake --add-missing" autoreconf
 %define _localstatedir %{_var}
 
 %configure2_5x	--libdir=/%{_lib} --enable-cups \
-                --enable-hid2hci \
                 --enable-dfutool \
                 --enable-tools \
                 --enable-bccmd \
@@ -228,7 +227,7 @@ EOF
 chmod 600 %{buildroot}%{_sysconfdir}/bluetooth/pin
 
 rm -f %{buildroot}/etc/default/bluetooth %{buildroot}/etc/init.d/bluetooth
-for a in bluetooth dund hidd pand ; do
+for a in dund hidd pand ; do
          install -D -m0644 $RPM_SOURCE_DIR/$a.conf %{buildroot}%{_sysconfdir}/sysconfig/$a
 done
 
