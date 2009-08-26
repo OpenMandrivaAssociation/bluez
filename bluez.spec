@@ -226,7 +226,7 @@ rm -rf %{buildroot}/%{_lib}/pkgconfig
 install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
 
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
-rm -rf %{buildroot}/lib/cups
+rm -rf %{buildroot}/%{_lib}/cups
 install -D -m0755 cups/bluetooth %{buildroot}/usr/lib/cups/backend/bluetooth
 
 install -D -m0644 scripts/bluetooth.rules %{buildroot}/%{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
