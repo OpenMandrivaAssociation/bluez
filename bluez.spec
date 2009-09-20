@@ -22,6 +22,9 @@ Source8:	hidd.conf
 Source9:	rfcomm.conf
 #Source10:	hidd.hotplug
 Source11:	hidd.udev.rules
+
+Patch100:	bluez-4.53-fail_udev_event_on_error.patch
+
 BuildRequires:	dbus-devel 
 BuildRequires:	flex 
 BuildRequires:	bison 
@@ -187,6 +190,7 @@ applications which will use libraries from %{name}.
 
 %prep
 %setup -q -n %name-%{version}
+%patch100 -p1 -b .fail_event
 
 
 %build
