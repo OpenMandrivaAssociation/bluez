@@ -20,7 +20,7 @@ Source6:	pand.conf
 Source7:	dund.conf
 Source8:	hidd.conf
 Source9:	rfcomm.conf
-Source10:	hidd.hotplug
+#Source10:	hidd.hotplug
 Source11:	hidd.udev.rules
 BuildRequires:	dbus-devel 
 BuildRequires:	flex 
@@ -83,7 +83,7 @@ fi
 %{_sbindir}/*
 /sbin/hidd
 /sbin/bluetoothd
-/sbin/udev_bluetooth_helper
+#/sbin/udev_bluetooth_helper
 %{_mandir}/man?/*
 %dir %{_sysconfdir}/bluetooth
 %config(noreplace) %{_sysconfdir}/sysconfig/*
@@ -241,7 +241,7 @@ cp %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin/
 cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
 
-install -D -m0755 %{SOURCE10} %{buildroot}/sbin/udev_bluetooth_helper
+#install -D -m0755 %{SOURCE10} %{buildroot}/sbin/udev_bluetooth_helper
 install -D -m0644 %{SOURCE11} %{buildroot}%{_sysconfdir}/udev/rules.d/60-bluetooth.rules
 
 #install more config files
