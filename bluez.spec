@@ -5,7 +5,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.53
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -21,7 +21,7 @@ Source7:	dund.conf
 Source8:	hidd.conf
 Source9:	rfcomm.conf
 #Source10:	hidd.hotplug
-Source11:	hidd.udev.rules
+#Source11:	hidd.udev.rules
 
 Patch100:	bluez-4.53-fail_udev_event_on_error.patch
 
@@ -246,7 +246,7 @@ cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
 
 #install -D -m0755 %{SOURCE10} %{buildroot}/sbin/udev_bluetooth_helper
-install -D -m0644 %{SOURCE11} %{buildroot}%{_sysconfdir}/udev/rules.d/60-bluetooth.rules
+#install -D -m0644 %{SOURCE11} %{buildroot}%{_sysconfdir}/udev/rules.d/60-bluetooth.rules
 
 #install more config files
 install -m0644 audio/audio.conf %{buildroot}%{_sysconfdir}/bluetooth/
