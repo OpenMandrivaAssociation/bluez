@@ -97,7 +97,6 @@ fi
 %{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
 %{_sysconfdir}/udev/rules.d/97-bluetooth-hid2hci.rules
 %{_sysconfdir}/udev/rules.d/97-bluetooth.rules
-%{_sysconfdir}/udev/rules.d/60-bluetooth.rules
 %{_localstatedir}/lib/bluetooth
 
 #--------------------------------------------------------------------
