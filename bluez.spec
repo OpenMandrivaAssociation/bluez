@@ -34,6 +34,7 @@ BuildRequires:	udev-tools
 BuildRequires:	libgstreamer0.10-plugins-base-devel 
 BuildRequires:	gstreamer0.10-devel hal-devel
 BuildRequires:	expat-devel
+BuildRequires:	udev-devel
 Requires:	python 
 Requires:	bluez-pin 
 Requires:	obex-data-server
