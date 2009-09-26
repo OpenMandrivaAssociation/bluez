@@ -204,7 +204,9 @@ applications which will use libraries from %{name}.
                 --enable-hidd \
                 --enable-pand \
                 --enable-dund \
-		--enable-hid2hci
+		--enable-hid2hci \
+		--enable-pcmcia \
+		--enable-udevrules
 
 %make
 
@@ -233,11 +235,6 @@ install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
 rm -rf %{buildroot}/%{_lib}/cups
 install -D -m0755 cups/bluetooth %{buildroot}/usr/lib/cups/backend/bluetooth
-
-install -D -m0644 scripts/bluetooth-serial.rules %{buildroot}/%{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
-install -D -m0644 scripts/bluetooth-hid2hci.rules %{buildroot}/%{_sysconfdir}/udev/rules.d/97-bluetooth-hid2hci.rules
-install -D -m0644 scripts/bluetooth.rules %{buildroot}/%{_sysconfdir}/udev/rules.d/97-bluetooth.rules
-install -D -m0755 scripts/bluetooth_serial %{buildroot}/lib/udev/bluetooth_serial
 
 mkdir -p %{buildroot}/sbin
 cp %{buildroot}%{_bindir}/hidd %{buildroot}/sbin/
