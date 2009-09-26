@@ -203,7 +203,8 @@ applications which will use libraries from %{name}.
                 --enable-gstreamer \
                 --enable-hidd \
                 --enable-pand \
-                --enable-dund
+                --enable-dund \
+		--enable-hid2hci
 
 %make
 
