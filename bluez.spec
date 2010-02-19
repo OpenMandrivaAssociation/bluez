@@ -5,7 +5,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.61
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -196,7 +196,8 @@ applications which will use libraries from %{name}.
 %build
 # fix mdv bug 35444
 %define _localstatedir %{_var}
-%configure2_5x	--libdir=/%{_lib} --enable-cups \
+%configure2_5x	--libdir=/%{_lib} \
+		--enable-cups \
                 --enable-dfutool \
                 --enable-tools \
                 --enable-bccmd \
@@ -206,13 +207,15 @@ applications which will use libraries from %{name}.
                 --enable-dund \
 		--enable-hid2hci \
 		--enable-pcmcia \
-		--enable-udevrules
+		--enable-udevrules \
+		--enable-capng
 
 %make
 
 %install
 rm -rf %{buildroot}
-%makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev 
+%makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
+
 
 mkdir -p %{buildroot}%{_libdir}
 mv %{buildroot}/%{_lib}/gstreamer-0.10 %{buildroot}%{_libdir}
@@ -232,9 +235,13 @@ done
 rm -rf %{buildroot}/%{_lib}/pkgconfig
 install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
 
+
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
-rm -rf %{buildroot}/%{_lib}/cups
-install -D -m0755 cups/bluetooth %{buildroot}/usr/lib/cups/backend/bluetooth
+if test -d %{buildroot}/lib64/cups ; then
+	install -D -m0755 %{buildroot}/lib64/cups/backend/bluetooth %{buildroot}/usr/lib/cups/backend/bluetooth
+	rm -rf %{buildroot}/lib64/cups
+fi 
+	
 
 mkdir -p %{buildroot}/sbin
 cp %{buildroot}%{_bindir}/hidd %{buildroot}/sbin/
