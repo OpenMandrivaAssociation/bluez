@@ -238,9 +238,9 @@ install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
 
 
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
-if test -d %{buildroot}/lib64/cups ; then
-	install -D -m0755 %{buildroot}/lib64/cups/backend/bluetooth %{buildroot}/usr/lib/cups/backend/bluetooth
-	rm -rf %{buildroot}/lib64/cups
+if test -d %{buildroot}/%{_lib}/cups ; then
+	install -D -m0755 %{buildroot}/%{_lib}/cups/backend/bluetooth %{buildroot}/usr/lib/cups/backend/bluetooth
+	rm -rf %{buildroot}/%{_lib}/cups
 fi 
 	
 
