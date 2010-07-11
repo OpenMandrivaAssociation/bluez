@@ -4,7 +4,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	4.64
+Version:	4.67
 Release:	%mkrel 1
 License:	GPLv2+
 Group:		Communications
@@ -25,19 +25,19 @@ Source9:	rfcomm.conf
 
 Patch100:	bluez-4.53-fail_udev_event_on_error.patch
 
-BuildRequires:	dbus-devel 
-BuildRequires:	flex 
-BuildRequires:	bison 
+BuildRequires:	dbus-devel
+BuildRequires:	flex
+BuildRequires:	bison
 BuildRequires:	libusb-devel
-BuildRequires:	libalsa-devel 
-BuildRequires:	udev-tools 
-BuildRequires:	libgstreamer0.10-plugins-base-devel 
+BuildRequires:	libalsa-devel
+BuildRequires:	udev-tools
+BuildRequires:	libgstreamer0.10-plugins-base-devel
 BuildRequires:	gstreamer0.10-devel hal-devel
 BuildRequires:	expat-devel
 BuildRequires:	udev-devel
 BuildRequires:	libcap-ng-devel
-Requires:	python 
-Requires:	bluez-pin 
+Requires:	python
+Requires:	bluez-pin
 Requires:	obex-data-server
 Provides:	bluez-sdp
 Obsoletes:	bluez-sdp < 4.0
