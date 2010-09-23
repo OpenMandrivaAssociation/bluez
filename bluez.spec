@@ -4,7 +4,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	4.69
+Version:	4.71
 Release:	%mkrel 1
 License:	GPLv2+
 Group:		Communications
@@ -90,7 +90,6 @@ fi
 /sbin/bluetoothd
 #/sbin/udev_bluetooth_helper
 %{_mandir}/man?/*
-%dir %{_sysconfdir}/bluetooth
 %config(noreplace) %{_sysconfdir}/sysconfig/*
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
 %config(noreplace) %{_sysconfdir}/bluetooth
@@ -143,7 +142,7 @@ This package contains ALSA support for Bluetooth audio devices
 %files alsa
 %defattr(-, root, root)
 %{_libdir}/alsa-lib/*.so
-%{_sysconfdir}/alsa/bluetooth.conf
+%{_datadir}/alsa/bluetooth.conf
 
 #--------------------------------------------------------------------
 
