@@ -4,7 +4,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	4.71
+Version:	4.72
 Release:	%mkrel 1
 License:	GPLv2+
 Group:		Communications
@@ -257,6 +257,7 @@ cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
 install -m0644 audio/audio.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 network/network.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
+install -m0644 serial/serial.conf %{buildroot}%{_sysconfdir}/bluetooth/
 
 mkdir -p %buildroot%{_datadir}/dbus-1/system-services/
 install -D -m0644 src/bluetooth.conf %{buildroot}%{_datadir}/dbus-1/system-services/org.bluez.service
