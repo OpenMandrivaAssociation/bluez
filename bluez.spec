@@ -2,12 +2,12 @@
 %define libname	%mklibname %{name} %{major}
 %define	devname	%mklibname -d %{name}
 
-%define _with_systemd 0
+%define _with_systemd 1
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.79
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -25,7 +25,8 @@ Source9:	rfcomm.conf
 #Source10:	hidd.hotplug
 #Source11:	hidd.udev.rules
 
-Patch100:	bluez-4.53-fail_udev_event_on_error.patch
+# (bor) also disable rule if systemd is active
+Patch100:	bluez-4.79-fail_udev_event_on_error.patch
 # (bor) based on http://article.gmane.org/gmane.linux.bluez.kernel/6479
 Patch101:	bluez-4.79-systemd_support.patch
 
@@ -96,6 +97,7 @@ fi
 /sbin/bluetoothd
 %if %{_with_systemd}
 /lib/systemd/system/bluetooth.service
+/lib/systemd/system/bluetooth.target.wants/bluetooth.service
 %endif
 #/sbin/udev_bluetooth_helper
 %{_mandir}/man?/*
