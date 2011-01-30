@@ -2,6 +2,8 @@
 %define libname	%mklibname %{name} %{major}
 %define	devname	%mklibname -d %{name}
 
+%define _with_systemd 0
+
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.79
@@ -24,6 +26,8 @@ Source9:	rfcomm.conf
 #Source11:	hidd.udev.rules
 
 Patch100:	bluez-4.53-fail_udev_event_on_error.patch
+# (bor) based on http://article.gmane.org/gmane.linux.bluez.kernel/6479
+Patch101:	bluez-4.79-systemd_support.patch
 
 BuildRequires:	dbus-devel
 BuildRequires:	flex
@@ -36,6 +40,8 @@ BuildRequires:	gstreamer0.10-devel hal-devel
 BuildRequires:	expat-devel
 BuildRequires:	udev-devel
 BuildRequires:	libcap-ng-devel
+# (bor) for P101
+BuildRequires:	automake autoconf
 Requires:	python
 Requires:	bluez-pin
 Requires:	obex-data-server
@@ -88,6 +94,9 @@ fi
 %{_sbindir}/*
 /sbin/hidd
 /sbin/bluetoothd
+%if %{_with_systemd}
+/lib/systemd/system/bluetooth.service
+%endif
 #/sbin/udev_bluetooth_helper
 %{_mandir}/man?/*
 %config(noreplace) %{_sysconfdir}/sysconfig/*
@@ -191,12 +200,18 @@ applications which will use libraries from %{name}.
 %prep
 %setup -q -n %name-%{version}
 %patch100 -p1 -b .fail_event
+%patch101 -p1 -b .systemd
 
 
 %build
+# (bor) for P101
+autoreconf -fis
 # fix mdv bug 35444
 %define _localstatedir %{_var}
 %configure2_5x	--libdir=/%{_lib} \
+%if !%{_with_systemd}
+		--without-systemdsystemunitdir \
+%endif
 		--enable-cups \
                 --enable-dfutool \
                 --enable-tools \
