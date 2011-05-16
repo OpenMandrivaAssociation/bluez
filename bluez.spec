@@ -28,7 +28,7 @@ Source9:	rfcomm.conf
 # (bor) also disable rule if systemd is active
 Patch100:	bluez-4.79-fail_udev_event_on_error.patch
 # (bor) based on http://article.gmane.org/gmane.linux.bluez.kernel/6479
-Patch101:	bluez-4.79-systemd_support.patch
+Patch101:	bluez-4.93-systemd_support.patch
 
 BuildRequires:	dbus-devel
 BuildRequires:	flex
@@ -106,6 +106,7 @@ fi
 %config(noreplace) %{_sysconfdir}/bluetooth
 %{_datadir}/dbus-1/system-services/org.bluez.service
 /lib/udev/bluetooth_serial
+/lib/udev/hid2hci
 %{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
 %{_sysconfdir}/udev/rules.d/97-bluetooth-hid2hci.rules
 %{_sysconfdir}/udev/rules.d/97-bluetooth.rules
@@ -207,7 +208,7 @@ applications which will use libraries from %{name}.
 
 %build
 # (bor) for P101
-autoreconf -fis
+autoreconf -fi
 # fix mdv bug 35444
 %define _localstatedir %{_var}
 %configure2_5x	--libdir=/%{_lib} \
