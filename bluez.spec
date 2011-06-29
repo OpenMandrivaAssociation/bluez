@@ -7,7 +7,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.93
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -43,7 +43,7 @@ BuildRequires:	udev-devel
 BuildRequires:	libcap-ng-devel
 # (bor) for P101
 BuildRequires:	automake autoconf
-Requires:	python
+Requires:	python-gobject
 Requires:	bluez-pin
 Requires:	obex-data-server
 Provides:	bluez-sdp
