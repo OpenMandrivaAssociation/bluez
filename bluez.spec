@@ -37,7 +37,7 @@ BuildRequires:	libusb-devel
 BuildRequires:	libalsa-devel
 BuildRequires:	udev-tools
 BuildRequires:	libgstreamer0.10-plugins-base-devel
-BuildRequires:	gstreamer0.10-devel hal-devel
+BuildRequires:	gstreamer0.10-devel
 BuildRequires:	expat-devel
 BuildRequires:	udev-devel
 BuildRequires:	libcap-ng-devel
