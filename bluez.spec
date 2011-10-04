@@ -6,29 +6,26 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	4.93
-Release:	%mkrel 2
+Version:	4.96
+Release:	%mkrel 1
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
-URL:		http://bluez.sourceforge.net/
-Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
-#Source1:	bluetooth.init
-#Source2:	pand.init
-#Source3:	dund.init
-#Source4:	hidd.init
-#Source5:	bluetooth.conf
+Source: http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
 Source6:	pand.conf
 Source7:	dund.conf
 Source8:	hidd.conf
 Source9:	rfcomm.conf
-#Source10:	hidd.hotplug
-#Source11:	hidd.udev.rules
 
 # (bor) also disable rule if systemd is active
 Patch100:	bluez-4.79-fail_udev_event_on_error.patch
-# (bor) based on http://article.gmane.org/gmane.linux.bluez.kernel/6479
-Patch101:	bluez-4.93-systemd_support.patch
+# (kazancas) patch from Fedora
+# https://bugzilla.redhat.com/show_bug.cgi?id=498756
+Patch4: bluez-socket-mobile-cf-connection-kit.patch
+# http://thread.gmane.org/gmane.linux.bluez.kernel/2396
+Patch5: 0001-Add-sixaxis-cable-pairing-plugin.patch
+# http://thread.gmane.org/gmane.linux.bluez.kernel/8645
+Patch6: 0001-systemd-install-systemd-unit-files.patch
 
 BuildRequires:	dbus-devel
 BuildRequires:	flex
@@ -43,16 +40,18 @@ BuildRequires:	udev-devel
 BuildRequires:	libcap-ng-devel
 # (bor) for P101
 BuildRequires:	automake autoconf
+# (kazancas)
+Buildrequires:	systemd, readline
 Requires:	python-gobject
 Requires:	bluez-pin
 Requires:	obex-data-server
 Provides:	bluez-sdp
-Obsoletes:	bluez-sdp < 4.0
+Obsoletes:	bluez-sdp < 4.5
 Provides:	bluez-pan
 Provides:	bluez-hciemu
 Obsoletes:	bluez-hciemu
 Provides:	bluez-utils
-Obsoletes:	bluez-utils < 4.0
+Obsoletes:  	bluez-utils < 4.5
 Suggests:	bluez-firmware
 
 %description
@@ -67,27 +66,22 @@ if [ "$1" = "2" -a -d %{_var}/lib/lib/bluetooth ]; then
  rmdir %{_var}/lib/lib/ > /dev/null 2>&1 || exit 0
 fi
 
-##%_post_service bluetooth
-##%_post_service dund
-##%_post_service hidd
-##%_post_service pand
-
-%preun
-##%_preun_service bluetooth
-##%_preun_service dund
-##%_preun_service hidd
-##%_preun_service pand
+if [ $1 -eq 1 ]; then
+	/bin/systemctl enable bluetooth.service >/dev/null 2>&1 || :
+fi
 
 %postun
 if [ "$1" = "0" ]; then
   update-alternatives --remove bluepin /usr/bin/bluepin
 fi
 
-%triggerin -- bluez < 4.46-4mdv
-/sbin/chkconfig --del bluetooth
-/sbin/chkconfig --del dund
-/sbin/chkconfig --del hidd
-/sbin/chkconfig --del pand
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+if [ $1 -ge 1 ] ; then
+        /bin/systemctl try-restart bluetooth.service >/dev/null 2>&1 || :
+fi
+
+%triggerun -- bluez < 4.94-4
+/bin/systemctl --no-reload enable bluetooth.service >/dev/null 2>&1 || :
 
 %files
 %defattr(-,root,root)
@@ -97,7 +91,7 @@ fi
 /sbin/bluetoothd
 %if %{_with_systemd}
 /lib/systemd/system/bluetooth.service
-/lib/systemd/system/bluetooth.target.wants/bluetooth.service
+#/lib/systemd/system/bluetooth.target.wants/bluetooth.service
 %endif
 #/sbin/udev_bluetooth_helper
 %{_mandir}/man?/*
@@ -203,8 +197,9 @@ applications which will use libraries from %{name}.
 %prep
 %setup -q -n %name-%{version}
 %patch100 -p1 -b .fail_event
-%patch101 -p1 -b .systemd
-
+%patch4 -p1 -b .socket-mobile
+%patch5 -p1 -b .cable-pairing
+%patch6 -p1 -b .systemd
 
 %build
 # (bor) for P101
@@ -226,7 +221,8 @@ autoreconf -fi
 		--enable-hid2hci \
 		--enable-pcmcia \
 		--enable-udevrules \
-		--enable-capng
+		--enable-capng \
+		--with-systemdsystemunitdir=/lib/systemd/system
 
 %make
 
@@ -267,9 +263,6 @@ cp %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin/
 
 cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
-
-#install -D -m0755 %{SOURCE10} %{buildroot}/sbin/udev_bluetooth_helper
-#install -D -m0644 %{SOURCE11} %{buildroot}%{_sysconfdir}/udev/rules.d/60-bluetooth.rules
 
 #install more config files
 install -m0644 audio/audio.conf %{buildroot}%{_sysconfdir}/bluetooth/
