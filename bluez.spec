@@ -6,12 +6,11 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	4.96
-Release:	%mkrel 1
+Version:	4.98
+Release:	1
 License:	GPLv2+
 Group:		Communications
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
-Source: http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
+Source: http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.xz
 Source6:	pand.conf
 Source7:	dund.conf
 Source8:	hidd.conf
@@ -32,7 +31,7 @@ BuildRequires:	flex
 BuildRequires:	bison
 BuildRequires:	libusb-devel
 BuildRequires:	libalsa-devel
-BuildRequires:	udev-tools
+BuildRequires:	udev
 BuildRequires:	libgstreamer0.10-plugins-base-devel
 BuildRequires:	gstreamer0.10-devel
 BuildRequires:	expat-devel
@@ -90,7 +89,7 @@ fi
 /sbin/hidd
 /sbin/bluetoothd
 %if %{_with_systemd}
-/lib/systemd/system/bluetooth.service
+/lib/systemd/system/*.service
 #/lib/systemd/system/bluetooth.target.wants/bluetooth.service
 %endif
 #/sbin/udev_bluetooth_helper
@@ -189,7 +188,6 @@ applications which will use libraries from %{name}.
 %dir %{_includedir}/bluetooth
 %{_includedir}/bluetooth/*.h
 /%{_lib}/*.so
-/%{_lib}/*.la
 %{_libdir}/pkgconfig/bluez.pc
 
 #--------------------------------------------------------------------
@@ -242,9 +240,10 @@ EOF
 chmod 600 %{buildroot}%{_sysconfdir}/bluetooth/pin
 
 rm -f %{buildroot}/etc/default/bluetooth %{buildroot}/etc/init.d/bluetooth
-for a in dund hidd pand ; do
-         install -D -m0644 $RPM_SOURCE_DIR/$a.conf %{buildroot}%{_sysconfdir}/sysconfig/$a
-done
+install -D -c -m 0644 %SOURCE6 %buildroot%_sysconfdir/sysconfig/pand
+install -D -c -m 0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/dund
+install -D -c -m 0644 %SOURCE8 %buildroot%_sysconfdir/sysconfig/hidd
+install -D -c -m 0644 %SOURCE9 %buildroot%_sysconfdir/sysconfig/rfcomm
 
 rm -rf %{buildroot}/%{_lib}/pkgconfig
 install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
@@ -278,6 +277,8 @@ rm -f %{buildroot}/%{_libdir}/*/*.la
 rm -f %{buildroot}/%{_lib}/*/*.la
 
 install -d -m0755 %{buildroot}/%{_localstatedir}/lib/bluetooth
+
+ln -s bluetooth.service %buildroot/lib/systemd/system/dbus-org.bluez.service
 
 %clean
 rm -fr %{buildroot}
