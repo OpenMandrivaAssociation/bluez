@@ -10,7 +10,7 @@ Version:	4.99
 Release:	1
 License:	GPLv2+
 Group:		Communications
-Source: http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.xz
+Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.xz
 Source6:	pand.conf
 Source7:	dund.conf
 Source8:	hidd.conf
@@ -218,7 +218,6 @@ autoreconf -fi
                 --enable-dund \
 		--enable-hid2hci \
 		--enable-pcmcia \
-		--enable-udevrules \
 		--enable-capng \
 		--with-systemdsystemunitdir=/lib/systemd/system
 
