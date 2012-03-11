@@ -256,8 +256,8 @@ fi
 	
 
 mkdir -p %{buildroot}/sbin
-cp %{buildroot}%{_bindir}/hidd %{buildroot}/sbin/
-cp %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin/
+mv %{buildroot}%{_bindir}/hidd %{buildroot}/sbin/
+mv %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin/
 
 cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
