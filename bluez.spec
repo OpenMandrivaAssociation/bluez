@@ -86,7 +86,7 @@ fi
 %defattr(-,root,root)
 %{_bindir}/*
 %{_sbindir}/*
-/sbin/hidd
+/bin/hidd
 /sbin/bluetoothd
 %if %{_with_systemd}
 /lib/systemd/system/*.service
@@ -255,8 +255,8 @@ if test -d %{buildroot}/%{_lib}/cups ; then
 fi 
 	
 
-mkdir -p %{buildroot}/sbin
-mv %{buildroot}%{_bindir}/hidd %{buildroot}/sbin/
+mkdir -p %{buildroot}/{bin,sbin}
+mv %{buildroot}%{_bindir}/hidd %{buildroot}/bin/
 mv %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin/
 
 cp test/test-* %{buildroot}%{_bindir}
