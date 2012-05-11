@@ -7,7 +7,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.99
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Communications
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.xz
@@ -26,31 +26,24 @@ Patch5: 0001-Add-sixaxis-cable-pairing-plugin.patch
 # http://thread.gmane.org/gmane.linux.bluez.kernel/8645
 Patch6: 0001-systemd-install-systemd-unit-files.patch
 
-BuildRequires:	dbus-devel
 BuildRequires:	flex
 BuildRequires:	bison
+BuildRequires:	udev
+BuildRequires:	dbus-devel
 BuildRequires:	libusb-devel
 BuildRequires:	libalsa-devel
-BuildRequires:	udev
 BuildRequires:	libgstreamer0.10-plugins-base-devel
 BuildRequires:	gstreamer0.10-devel
 BuildRequires:	expat-devel
 BuildRequires:	udev-devel
 BuildRequires:	libcap-ng-devel
-# (bor) for P101
-BuildRequires:	automake autoconf
 # (kazancas)
-Buildrequires:	systemd, readline
-Requires:	python-gobject
+Buildrequires:	systemd
+BuildRequires:	readline
+
 Requires:	bluez-pin
-Requires:	obex-data-server
-Provides:	bluez-sdp
-Obsoletes:	bluez-sdp < 4.5
-Provides:	bluez-pan
-Provides:	bluez-hciemu
-Obsoletes:	bluez-hciemu
-Provides:	bluez-utils
-Obsoletes:  	bluez-utils < 4.5
+# MD I highly doubt this is true after looking around
+Suggests:	obex-data-server
 Suggests:	bluez-firmware
 
 %description
@@ -83,9 +76,17 @@ fi
 /bin/systemctl --no-reload enable bluetooth.service >/dev/null 2>&1 || :
 
 %files
-%defattr(-,root,root)
-%{_bindir}/*
-%{_sbindir}/*
+%{_bindir}/hcitool
+%{_bindir}/l2ping
+%{_bindir}/rfcomm
+%{_bindir}/sdptool
+%{_bindir}/ciptool
+%{_bindir}/dfutool
+%{_bindir}/gatttool
+%{_sbindir}/hciattach
+%{_sbindir}/hciconfig
+%{_sbindir}/bluetoothd
+%{_sbindir}/bccmd
 /bin/hidd
 /sbin/bluetoothd
 %if %{_with_systemd}
@@ -117,7 +118,6 @@ Obsoletes:      %name-utils-cups
 This package contains the CUPS backend for Bluetooth printers.
 
 %files cups
-%defattr(-, root, root)
 %{_prefix}/lib/cups/backend/bluetooth
 
 #--------------------------------------------------------------------
@@ -131,7 +131,6 @@ Obsoletes:      %name-utils-gstreamer
 This package contains gstreamer plugins for the Bluetooth SBC audio format
 
 %files gstreamer
-%defattr(-, root, root)
 %{_libdir}/gstreamer-*/*.so
 
 #--------------------------------------------------------------------
@@ -145,7 +144,6 @@ Obsoletes:      %name-utils-alsa
 This package contains ALSA support for Bluetooth audio devices
 
 %files alsa
-%defattr(-, root, root)
 %{_libdir}/alsa-lib/*.so
 %{_datadir}/alsa/bluetooth.conf
 
@@ -154,15 +152,43 @@ This package contains ALSA support for Bluetooth audio devices
 %package -n	%{libname}
 Summary:	Official Linux Bluetooth protocol stack
 Group:		System/Libraries
-Provides:	lib%{name}-sdp2
-Obsoletes:	lib%{name}-sdp2
 
 %description -n	%{libname}
 These are the official Bluetooth communication libraries for Linux.
 
 %files -n %{libname}
-%defattr(-,root,root)
 /%{_lib}/lib*.so.%{major}*
+
+#--------------------------------------------------------------------
+
+%package test
+Summary:	Tools for testing of various Bluetooth-functions
+Group:		System/Servers
+Requires:	python-dbus
+Requires:	python-gobject
+
+%description test
+Contains a few tools for testing various bluetooth functions. The
+BLUETOOTH trademarks are owned by Bluetooth SIG, Inc., U.S.A.
+
+%files test
+%{_bindir}/l2test
+%{_bindir}/rctest
+%{_bindir}/apitest
+%{_bindir}/list-devices
+%{_bindir}/simple-agent
+%{_bindir}/simple-service
+%{_bindir}/test-adapter
+%{_bindir}/test-audio
+%{_bindir}/test-device
+%{_bindir}/test-discovery
+%{_bindir}/test-input
+%{_bindir}/test-manager
+%{_bindir}/test-network
+%{_bindir}/test-serial
+%{_bindir}/test-service
+%{_bindir}/test-telephony
+%{_sbindir}/hciemu
 
 #--------------------------------------------------------------------
 
@@ -170,20 +196,13 @@ These are the official Bluetooth communication libraries for Linux.
 Summary:	Headers for developing programs that will use %name
 Group:		Development/C++
 Requires:	%{libname} = %{version}
-Provides:	lib%{name}-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
-Provides:	lib%{name}-sdp-devel, lib%{name}-sdp2-devel
-Obsoletes:	lib%{name}-sdp-devel, lib%{name}-sdp2-devel
-Provides:	%{name}-sdp-devel
-Obsoletes:	%{name}-sdp-devel
-Obsoletes:	%{libname}-devel
 
 %description -n	%{devname}
 This package contains the headers that programmers will need to develop
 applications which will use libraries from %{name}.
 
 %files -n %{devname}
-%defattr(-,root,root)
 %doc AUTHORS ChangeLog README
 %dir %{_includedir}/bluetooth
 %{_includedir}/bluetooth/*.h
@@ -193,7 +212,7 @@ applications which will use libraries from %{name}.
 #--------------------------------------------------------------------
 
 %prep
-%setup -q -n %name-%{version}
+%setup -q
 %patch100 -p1 -b .fail_event
 %patch4 -p1 -b .socket-mobile
 %patch5 -p1 -b .cable-pairing
@@ -204,33 +223,31 @@ applications which will use libraries from %{name}.
 autoreconf -fi
 # fix mdv bug 35444
 %define _localstatedir %{_var}
-%configure2_5x	--libdir=/%{_lib} \
+%configure2_5x	\
+	--libdir=/%{_lib} \
 %if !%{_with_systemd}
-		--without-systemdsystemunitdir \
+	--without-systemdsystemunitdir \
 %endif
-		--enable-cups \
-                --enable-dfutool \
-                --enable-tools \
-                --enable-bccmd \
-                --enable-gstreamer \
-                --enable-hidd \
-                --enable-pand \
-                --enable-dund \
-		--enable-hid2hci \
-		--enable-pcmcia \
-		--enable-capng \
-		--with-systemdsystemunitdir=/lib/systemd/system
+	--enable-cups \
+	--enable-dfutool \
+	--enable-tools \
+	--enable-bccmd \
+	--enable-gstreamer \
+	--enable-hidd \
+	--enable-pand \
+	--enable-dund \
+	--enable-hid2hci \
+	--enable-pcmcia \
+	--enable-capng \
+	--with-systemdsystemunitdir=/lib/systemd/system
 
 %make
 
 %install
-rm -rf %{buildroot}
 %makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
-
 
 mkdir -p %{buildroot}%{_libdir}
 mv %{buildroot}/%{_lib}/gstreamer-0.10 %{buildroot}%{_libdir}
-
 
 cat << EOF > %{buildroot}%{_sysconfdir}/bluetooth/pin
 1234
@@ -254,7 +271,6 @@ if test -d %{buildroot}/%{_lib}/cups ; then
 	rm -rf %{buildroot}/%{_lib}/cups
 fi 
 	
-
 mkdir -p %{buildroot}/{bin,sbin}
 mv %{buildroot}%{_bindir}/hidd %{buildroot}/bin/
 mv %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin/
@@ -268,8 +284,8 @@ install -m0644 network/network.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 serial/serial.conf %{buildroot}%{_sysconfdir}/bluetooth/
 
-%__mkdir -p %{buildroot}%{_libdir}/alsa-lib/
-%__mv %{buildroot}/%{_lib}/alsa-lib/*.so %{buildroot}%{_libdir}/alsa-lib/
+mkdir -p %{buildroot}%{_libdir}/alsa-lib/
+mv %{buildroot}/%{_lib}/alsa-lib/*.so %{buildroot}%{_libdir}/alsa-lib/
 
 # remove unpackaged files
 rm -f %{buildroot}/%{_libdir}/*/*.la
@@ -279,5 +295,3 @@ install -d -m0755 %{buildroot}/%{_localstatedir}/lib/bluetooth
 
 ln -s bluetooth.service %buildroot/lib/systemd/system/dbus-org.bluez.service
 
-%clean
-rm -fr %{buildroot}
