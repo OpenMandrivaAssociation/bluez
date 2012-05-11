@@ -17,7 +17,7 @@ Source8:	hidd.conf
 Source9:	rfcomm.conf
 
 # (bor) also disable rule if systemd is active
-Patch100:	bluez-4.79-fail_udev_event_on_error.patch
+Patch1:	bluez-4.79-fail_udev_event_on_error.patch
 # (kazancas) patch from Fedora
 # https://bugzilla.redhat.com/show_bug.cgi?id=498756
 Patch4: bluez-socket-mobile-cf-connection-kit.patch
@@ -28,21 +28,19 @@ Patch6: 0001-systemd-install-systemd-unit-files.patch
 
 BuildRequires:	flex
 BuildRequires:	bison
-BuildRequires:	udev
-BuildRequires:	dbus-devel
-BuildRequires:	libusb-devel
-BuildRequires:	libalsa-devel
-BuildRequires:	libgstreamer0.10-plugins-base-devel
-BuildRequires:	gstreamer0.10-devel
-BuildRequires:	expat-devel
-BuildRequires:	udev-devel
-BuildRequires:	libcap-ng-devel
-# (kazancas)
 Buildrequires:	systemd
 BuildRequires:	readline
+BuildRequires:	udev
+BuildRequires:	expat-devel
+BuildRequires:	pkgconfig(alsa)
+BuildRequires:	pkgconfig(dbus-1)
+BuildRequires:	pkgconfig(gstreamer-plugins-base-0.10)
+BuildRequires:	pkgconfig(gstreamer-0.10)
+BuildRequires:	pkgconfig(libcap-ng)
+BuildRequires:	pkgconfig(libusb-1.0)
+BuildRequires:	pkgconfig(udev)
 
 Requires:	bluez-pin
-# MD I highly doubt this is true after looking around
 Suggests:	obex-data-server
 Suggests:	bluez-firmware
 
@@ -76,24 +74,26 @@ fi
 /bin/systemctl --no-reload enable bluetooth.service >/dev/null 2>&1 || :
 
 %files
+%{_bindir}/ciptool
+%{_bindir}/dfutool
 %{_bindir}/hcitool
+%{_bindir}/hidd
 %{_bindir}/l2ping
 %{_bindir}/rfcomm
 %{_bindir}/sdptool
-%{_bindir}/ciptool
-%{_bindir}/dfutool
-%{_bindir}/gatttool
+### compat
+%{_bindir}/dund
+%{_bindir}/pand
+### 
+%{_sbindir}/bccmd
 %{_sbindir}/hciattach
 %{_sbindir}/hciconfig
 %{_sbindir}/bluetoothd
-%{_sbindir}/bccmd
 /bin/hidd
 /sbin/bluetoothd
 %if %{_with_systemd}
 /lib/systemd/system/*.service
-#/lib/systemd/system/bluetooth.target.wants/bluetooth.service
 %endif
-#/sbin/udev_bluetooth_helper
 %{_mandir}/man?/*
 %config(noreplace) %{_sysconfdir}/sysconfig/*
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
@@ -112,7 +112,6 @@ fi
 Summary:        CUPS printer backend for Bluetooth printers
 Group:          System/Servers
 Requires:       cups
-Obsoletes:      %name-utils-cups
 
 %description    cups
 This package contains the CUPS backend for Bluetooth printers.
@@ -125,7 +124,6 @@ This package contains the CUPS backend for Bluetooth printers.
 %package gstreamer
 Summary: Gstreamer support for SBC audio format
 Group: Sound
-Obsoletes:      %name-utils-gstreamer
 
 %description gstreamer
 This package contains gstreamer plugins for the Bluetooth SBC audio format
@@ -138,7 +136,6 @@ This package contains gstreamer plugins for the Bluetooth SBC audio format
 %package alsa
 Summary: ALSA support for Bluetooth audio devices
 Group: Sound
-Obsoletes:      %name-utils-alsa
 
 %description alsa
 This package contains ALSA support for Bluetooth audio devices
@@ -172,28 +169,13 @@ Contains a few tools for testing various bluetooth functions. The
 BLUETOOTH trademarks are owned by Bluetooth SIG, Inc., U.S.A.
 
 %files test
-%{_bindir}/l2test
-%{_bindir}/rctest
-%{_bindir}/apitest
-%{_bindir}/list-devices
 %{_bindir}/simple-agent
-%{_bindir}/simple-service
-%{_bindir}/test-adapter
-%{_bindir}/test-audio
-%{_bindir}/test-device
-%{_bindir}/test-discovery
-%{_bindir}/test-input
-%{_bindir}/test-manager
-%{_bindir}/test-network
-%{_bindir}/test-serial
-%{_bindir}/test-service
-%{_bindir}/test-telephony
-%{_sbindir}/hciemu
+%{_bindir}/test-*
 
 #--------------------------------------------------------------------
 
 %package -n	%{devname}
-Summary:	Headers for developing programs that will use %name
+Summary:	Headers for developing programs that will use %{name}
 Group:		Development/C++
 Requires:	%{libname} = %{version}
 Provides:	%{name}-devel = %{version}-%{release}
@@ -213,14 +195,10 @@ applications which will use libraries from %{name}.
 
 %prep
 %setup -q
-%patch100 -p1 -b .fail_event
-%patch4 -p1 -b .socket-mobile
-%patch5 -p1 -b .cable-pairing
-%patch6 -p1 -b .systemd
+%apply_patches
+autoreconf -fi
 
 %build
-# (bor) for P101
-autoreconf -fi
 # fix mdv bug 35444
 %define _localstatedir %{_var}
 %configure2_5x	\
@@ -264,19 +242,23 @@ install -D -c -m 0644 %SOURCE9 %buildroot%_sysconfdir/sysconfig/rfcomm
 rm -rf %{buildroot}/%{_lib}/pkgconfig
 install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
 
-
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
 if test -d %{buildroot}/%{_lib}/cups ; then
 	install -D -m0755 %{buildroot}/%{_lib}/cups/backend/bluetooth %{buildroot}/usr/lib/cups/backend/bluetooth
 	rm -rf %{buildroot}/%{_lib}/cups
 fi 
 	
-mkdir -p %{buildroot}/{bin,sbin}
-mv %{buildroot}%{_bindir}/hidd %{buildroot}/bin/
-mv %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin/
-
 cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
+
+# these look like dups
+rm -f %{buildroot}%{_bindir}/hidd
+rm -f %{buildroot}%{_sbindir}/bluetoothd
+# sym link just to be safe
+pushd %{buildroot}
+ln -l bin/hidd %{_bindir}/hidd
+ln -l sbin/bluetoothd %{_sbindir}/bluetoothd
+popd
 
 #install more config files
 install -m0644 audio/audio.conf %{buildroot}%{_sysconfdir}/bluetooth/
