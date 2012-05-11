@@ -251,13 +251,13 @@ fi
 cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
 
-# these look like dups
-rm -f %{buildroot}%{_bindir}/hidd
-rm -f %{buildroot}%{_sbindir}/bluetoothd
+mkdir -p %{buildroot}/{bin,sbin}
+mv %{buildroot}%{_bindir}/hidd %{buildroot}/bin
+mv %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin
 # sym link just to be safe
 pushd %{buildroot}
-ln -l bin/hidd %{_bindir}/hidd
-ln -l sbin/bluetoothd %{_sbindir}/bluetoothd
+ln -s /bin/hidd %{buildroot}%{_bindir}/hidd
+ln -s /sbin/bluetoothd %{buildroot}%{_sbindir}/bluetoothd
 popd
 
 #install more config files
