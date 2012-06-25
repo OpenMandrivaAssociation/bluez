@@ -6,8 +6,8 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	4.99
-Release:	2
+Version:	4.101
+Release:	1
 License:	GPLv2+
 Group:		Communications
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.xz
@@ -15,16 +15,19 @@ Source6:	pand.conf
 Source7:	dund.conf
 Source8:	hidd.conf
 Source9:	rfcomm.conf
+Source10:	bluez-uinput.modules
 
-# (bor) also disable rule if systemd is active
-Patch1:	bluez-4.79-fail_udev_event_on_error.patch
-# (kazancas) patch from Fedora
-# https://bugzilla.redhat.com/show_bug.cgi?id=498756
-Patch4: bluez-socket-mobile-cf-connection-kit.patch
-# http://thread.gmane.org/gmane.linux.bluez.kernel/2396
-Patch5: 0001-Add-sixaxis-cable-pairing-plugin.patch
 # http://thread.gmane.org/gmane.linux.bluez.kernel/8645
-Patch6: 0001-systemd-install-systemd-unit-files.patch
+Patch0:		0002-systemd-unitdir-enable.patch
+
+Patch4:		bluez-socket-mobile-cf-connection-kit.patch
+# http://thread.gmane.org/gmane.linux.bluez.kernel/2396
+Patch5:		0001-Add-sixaxis-cable-pairing-plugin.patch
+# PS3 BD Remote patches
+Patch6:		0001-input-Add-helper-function-to-request-disconnect.patch
+Patch7:		0002-fakehid-Disconnect-from-PS3-remote-after-10-mins.patch
+Patch8:		0003-fakehid-Use-the-same-constant-as-declared.patch
+
 
 BuildRequires:	flex
 BuildRequires:	bison
@@ -79,6 +82,7 @@ fi
 %{_bindir}/dfutool
 %{_bindir}/hcitool
 %{_bindir}/hidd
+%{_bindir}/gatttool
 %{_bindir}/l2ping
 %{_bindir}/rfcomm
 %{_bindir}/sdptool
@@ -104,7 +108,6 @@ fi
 /lib/udev/hid2hci
 %{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
 %{_sysconfdir}/udev/rules.d/97-bluetooth-hid2hci.rules
-%{_sysconfdir}/udev/rules.d/97-bluetooth.rules
 %{_localstatedir}/lib/bluetooth
 
 #--------------------------------------------------------------------
@@ -197,9 +200,11 @@ applications which will use libraries from %{name}.
 %prep
 %setup -q
 %apply_patches
-autoreconf -fi
 
 %build
+libtoolize -f -c
+autoreconf -fi
+
 # fix mdv bug 35444
 %define _localstatedir %{_var}
 %configure2_5x	\
@@ -209,6 +214,11 @@ autoreconf -fi
 %endif
 	--enable-cups \
 	--enable-dfutool \
+	--enable-audio \
+	--enable-health \
+	--disable-hal \
+	--enable-pnat \
+	--enable-wiimote \
 	--enable-tools \
 	--enable-bccmd \
 	--enable-gstreamer \
@@ -217,7 +227,6 @@ autoreconf -fi
 	--enable-dund \
 	--enable-hid2hci \
 	--enable-pcmcia \
-	--enable-capng \
 	--with-systemdsystemunitdir=/lib/systemd/system
 
 %make
