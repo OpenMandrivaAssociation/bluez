@@ -82,7 +82,6 @@ fi
 %{_bindir}/dfutool
 %{_bindir}/hcitool
 %{_bindir}/hidd
-%{_bindir}/gatttool
 %{_bindir}/l2ping
 %{_bindir}/rfcomm
 %{_bindir}/sdptool
