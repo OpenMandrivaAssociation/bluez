@@ -27,7 +27,7 @@ Patch5:		0001-Add-sixaxis-cable-pairing-plugin.patch
 Patch6:		0001-input-Add-helper-function-to-request-disconnect.patch
 Patch7:		0002-fakehid-Disconnect-from-PS3-remote-after-10-mins.patch
 Patch8:		0003-fakehid-Use-the-same-constant-as-declared.patch
-
+Patch9:		bluez-4.101-fix-c++11-compatibility.patch
 
 BuildRequires:	flex
 BuildRequires:	bison
