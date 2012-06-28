@@ -200,10 +200,10 @@ applications which will use libraries from %{name}.
 %setup -q
 %apply_patches
 
-%build
 libtoolize -f -c
 autoreconf -fi
 
+%build
 %configure2_5x	\
 	--libdir=/%{_lib} \
 %if !%{with systemd}
