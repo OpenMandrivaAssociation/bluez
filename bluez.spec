@@ -2,12 +2,12 @@
 %define libname	%mklibname %{name} %{major}
 %define	devname	%mklibname -d %{name}
 
-%define _with_systemd 1
+%bcond_without	systemd
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.101
-Release:	2
+Release:	3
 License:	GPLv2+
 Group:		Communications
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.xz
@@ -95,7 +95,7 @@ fi
 %{_sbindir}/bluetoothd
 /bin/hidd
 /sbin/bluetoothd
-%if %{_with_systemd}
+%if %{with systemd}
 /lib/systemd/system/*.service
 %endif
 %{_mandir}/man?/*
@@ -111,39 +111,39 @@ fi
 
 #--------------------------------------------------------------------
 
-%package        cups
-Summary:        CUPS printer backend for Bluetooth printers
-Group:          System/Servers
-Requires:       cups
+%package	cups
+Summary:	CUPS printer backend for Bluetooth printers
+Group:		System/Servers
+Requires:	cups
 
-%description    cups
+%description	cups
 This package contains the CUPS backend for Bluetooth printers.
 
-%files cups
+%files		cups
 %{_prefix}/lib/cups/backend/bluetooth
 
 #--------------------------------------------------------------------
 
-%package gstreamer
-Summary: Gstreamer support for SBC audio format
-Group: Sound
+%package	gstreamer
+Summary:	Gstreamer support for SBC audio format
+Group:		Sound
 
-%description gstreamer
+%description	gstreamer
 This package contains gstreamer plugins for the Bluetooth SBC audio format
 
-%files gstreamer
+%files		gstreamer
 %{_libdir}/gstreamer-*/*.so
 
 #--------------------------------------------------------------------
 
-%package alsa
-Summary: ALSA support for Bluetooth audio devices
-Group: Sound
+%package	alsa
+Summary:	ALSA support for Bluetooth audio devices
+Group:		Sound
 
-%description alsa
+%description	alsa
 This package contains ALSA support for Bluetooth audio devices
 
-%files alsa
+%files		alsa
 %{_libdir}/alsa-lib/*.so
 %{_datadir}/alsa/bluetooth.conf
 
@@ -161,17 +161,17 @@ These are the official Bluetooth communication libraries for Linux.
 
 #--------------------------------------------------------------------
 
-%package test
+%package	test
 Summary:	Tools for testing of various Bluetooth-functions
 Group:		System/Servers
 Requires:	python-dbus
 Requires:	python-gobject
 
-%description test
+%description	test
 Contains a few tools for testing various bluetooth functions. The
 BLUETOOTH trademarks are owned by Bluetooth SIG, Inc., U.S.A.
 
-%files test
+%files		test
 %{_bindir}/simple-agent
 %{_bindir}/test-*
 
@@ -187,7 +187,7 @@ Provides:	%{name}-devel = %{version}-%{release}
 This package contains the headers that programmers will need to develop
 applications which will use libraries from %{name}.
 
-%files -n %{devname}
+%files -n	%{devname}
 %doc AUTHORS ChangeLog README
 %dir %{_includedir}/bluetooth
 %{_includedir}/bluetooth/*.h
@@ -204,11 +204,9 @@ applications which will use libraries from %{name}.
 libtoolize -f -c
 autoreconf -fi
 
-# fix mdv bug 35444
-%define _localstatedir %{_var}
 %configure2_5x	\
 	--libdir=/%{_lib} \
-%if !%{_with_systemd}
+%if !%{with systemd}
 	--without-systemdsystemunitdir \
 %endif
 	--enable-cups \
@@ -242,11 +240,11 @@ EOF
 
 chmod 600 %{buildroot}%{_sysconfdir}/bluetooth/pin
 
-rm -f %{buildroot}/etc/default/bluetooth %{buildroot}/etc/init.d/bluetooth
-install -D -c -m 0644 %SOURCE6 %buildroot%_sysconfdir/sysconfig/pand
-install -D -c -m 0644 %SOURCE7 %buildroot%_sysconfdir/sysconfig/dund
-install -D -c -m 0644 %SOURCE8 %buildroot%_sysconfdir/sysconfig/hidd
-install -D -c -m 0644 %SOURCE9 %buildroot%_sysconfdir/sysconfig/rfcomm
+rm -f %{buildroot}%{_sysconfdir}/default/bluetooth %{buildroot}%{_sysconfdir}/init.d/bluetooth
+install -m644 %{SOURCE6} -D %{buildroot}%{_sysconfdir}/sysconfig/pand
+install -m644 %{SOURCE7} -D %{buildroot}%{_sysconfdir}/sysconfig/dund
+install -m644 %{SOURCE8} -D %{buildroot}%{_sysconfdir}/sysconfig/hidd
+install -m644 %{SOURCE9} -D %{buildroot}%{_sysconfdir}/sysconfig/rfcomm
 
 rm -rf %{buildroot}/%{_lib}/pkgconfig
 install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
@@ -277,10 +275,6 @@ install -m0644 serial/serial.conf %{buildroot}%{_sysconfdir}/bluetooth/
 
 mkdir -p %{buildroot}%{_libdir}/alsa-lib/
 mv %{buildroot}/%{_lib}/alsa-lib/*.so %{buildroot}%{_libdir}/alsa-lib/
-
-# remove unpackaged files
-rm -f %{buildroot}/%{_libdir}/*/*.la
-rm -f %{buildroot}/%{_lib}/*/*.la
 
 install -d -m0755 %{buildroot}/%{_localstatedir}/lib/bluetooth
 
