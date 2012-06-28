@@ -251,7 +251,7 @@ install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
 
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
 if test -d %{buildroot}/%{_lib}/cups ; then
-	install -D -m0755 %{buildroot}/%{_lib}/cups/backend/bluetooth %{buildroot}/usr/lib/cups/backend/bluetooth
+	install -D -m0755 %{buildroot}/%{_lib}/cups/backend/bluetooth %{buildroot}%{_prefix}/lib/cups/backend/bluetooth
 	rm -rf %{buildroot}/%{_lib}/cups
 fi 
 	
@@ -276,7 +276,7 @@ install -m0644 serial/serial.conf %{buildroot}%{_sysconfdir}/bluetooth/
 mkdir -p %{buildroot}%{_libdir}/alsa-lib/
 mv %{buildroot}/%{_lib}/alsa-lib/*.so %{buildroot}%{_libdir}/alsa-lib/
 
-install -d -m0755 %{buildroot}/%{_localstatedir}/lib/bluetooth
+install -d -m0755 %{buildroot}%{_localstatedir}/lib/bluetooth
 
 ln -s bluetooth.service %buildroot/lib/systemd/system/dbus-org.bluez.service
 
