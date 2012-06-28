@@ -71,7 +71,7 @@ fi
 
 /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 if [ $1 -ge 1 ] ; then
-        /bin/systemctl try-restart bluetooth.service >/dev/null 2>&1 || :
+	/bin/systemctl try-restart bluetooth.service >/dev/null 2>&1 || :
 fi
 
 %triggerun -- bluez < 4.94-4
@@ -80,6 +80,7 @@ fi
 %files
 %{_bindir}/ciptool
 %{_bindir}/dfutool
+%{_bindir}/gatttool
 %{_bindir}/hcitool
 %{_bindir}/hidd
 %{_bindir}/l2ping
@@ -279,4 +280,3 @@ mv %{buildroot}/%{_lib}/alsa-lib/*.so %{buildroot}%{_libdir}/alsa-lib/
 install -d -m0755 %{buildroot}%{_localstatedir}/lib/bluetooth
 
 ln -s bluetooth.service %buildroot/lib/systemd/system/dbus-org.bluez.service
-
