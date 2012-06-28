@@ -259,6 +259,7 @@ fi
 	
 cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
+rm -f %{buildroot}%{_bindir}/test-*.c
 
 mkdir -p %{buildroot}/{bin,sbin}
 mv %{buildroot}%{_bindir}/hidd %{buildroot}/bin
