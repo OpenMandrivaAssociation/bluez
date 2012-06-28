@@ -10,6 +10,7 @@ Version:	4.101
 Release:	3
 License:	GPLv2+
 Group:		Communications
+URL:		http://www.bluez.org/
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.xz
 Source6:	pand.conf
 Source7:	dund.conf
