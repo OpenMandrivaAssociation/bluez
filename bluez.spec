@@ -33,7 +33,7 @@ Patch9:		bluez-4.101-fix-c++11-compatibility.patch
 BuildRequires:	flex
 BuildRequires:	bison
 Buildrequires:	systemd
-BuildRequires:	readline
+BuildRequires:	readline-devel
 BuildRequires:	udev
 BuildRequires:	expat-devel
 BuildRequires:	pkgconfig(alsa)
