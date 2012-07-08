@@ -7,7 +7,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.101
-Release:	3
+Release:	4
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -34,7 +34,6 @@ BuildRequires:	flex
 BuildRequires:	bison
 Buildrequires:	systemd
 BuildRequires:	readline-devel
-BuildRequires:	udev
 BuildRequires:	expat-devel
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(dbus-1)
@@ -43,7 +42,7 @@ BuildRequires:	pkgconfig(gstreamer-0.10)
 BuildRequires:	pkgconfig(libcap-ng)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	usb1-devel
-BuildRequires:	pkgconfig(udev)
+BuildRequires:	pkgconfig(udev) >= 186
 
 Requires:	bluez-pin
 Suggests:	obex-data-server
