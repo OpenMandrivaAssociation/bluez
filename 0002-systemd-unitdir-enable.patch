@@ -1,0 +1,107 @@
+From 4319a0601457772591e520e407019b606780d035 Mon Sep 17 00:00:00 2001
+From: Alexander Khryukin <alexander@mezon.ru>
+Date: Mon, 25 Jun 2012 13:16:23 -0400
+Subject: [PATCH 2/2] test
+
+---
+ Makefile.am                  |   21 ++++++++++++++++++---
+ configure.ac                 |    7 +++++++
+ scripts/bluetooth.service.in |   14 ++++++++++++++
+ scripts/org.bluez.service    |    5 +++++
+ 4 files changed, 44 insertions(+), 3 deletions(-)
+ create mode 100644 scripts/bluetooth.service.in
+ create mode 100644 scripts/org.bluez.service
+
+diff --git a/Makefile.am b/Makefile.am
+index 1c214c6..024aa36 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -414,9 +414,24 @@ endif
+ rules_DATA = $(foreach file,$(udev_files), scripts/97-$(notdir $(file)))
+ endif
+ 
++if HAVE_SYSTEMD
++systemdsystemunit_DATA = \
++	 scripts/bluetooth.service
++
++scripts/bluetooth.service: scripts/bluetooth.service.in
++	@$(SED) -e "s|\@sbindir\@|$(sbindir)|" $< >$@
++
++dbussystemservicesdir = $(datadir)/dbus-1/system-services
++
++dbussystemservices_DATA = \
++	scripts/org.bluez.service
++endif
++
++
+ CLEANFILES += $(rules_DATA)
+ 
+-EXTRA_DIST += scripts/bluetooth-hid2hci.rules scripts/bluetooth-serial.rules
++EXTRA_DIST += scripts/bluetooth-hid2hci.rules scripts/bluetooth-serial.rules \
++	      scripts/bluetooth.service.in scripts/org.bluez.service
+ 
+ EXTRA_DIST += doc/manager-api.txt \
+ 		doc/adapter-api.txt doc/device-api.txt \
+@@ -460,9 +475,9 @@ pkgconfigdir = $(libdir)/pkgconfig
+ 
+ pkgconfig_DATA = bluez.pc
+ 
+-DISTCHECK_CONFIGURE_FLAGS = --disable-datafiles
++DISTCHECK_CONFIGURE_FLAGS = --disable-datafiles --with-systemdsystemunitdir=
+ 
+-DISTCLEANFILES = $(pkgconfig_DATA)
++DISTCLEANFILES = $(pkgconfig_DATA) scripts/bluetooth.service
+ 
+ MAINTAINERCLEANFILES = Makefile.in \
+ 	aclocal.m4 configure config.h.in config.sub config.guess \
+diff --git a/configure.ac b/configure.ac
+index f2db920..6f6b4c0 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -60,5 +60,12 @@ if (test -n "${path_systemdunit}"); then
+ 	AC_SUBST(SYSTEMD_UNITDIR)
+ fi
+ AM_CONDITIONAL(SYSTEMD, test -n "${path_systemdunit}")
++# systemd
++AC_ARG_WITH([systemdsystemunitdir],
++	     AS_HELP_STRING([--with-systemdsystemunitdir=DIR], [Directory for systemd service files]),
++	     [],
++	     [with_systemdsystemunitdir=$($PKG_CONFIG --variable=systemdsystemunitdir systemd)])
++AC_SUBST([systemdsystemunitdir], [$with_systemdsystemunitdir])
++AM_CONDITIONAL(HAVE_SYSTEMD, [test -n "$with_systemdsystemunitdir"])
+ 
+ AC_OUTPUT(Makefile doc/version.xml src/bluetoothd.8 src/bluetooth.service bluez.pc)
+diff --git a/scripts/bluetooth.service.in b/scripts/bluetooth.service.in
+new file mode 100644
+index 0000000..5ec0e2a
+--- /dev/null
++++ b/scripts/bluetooth.service.in
+@@ -0,0 +1,14 @@
++[Unit]
++Description=Bluetooth Manager
++After=syslog.target
++
++[Service]
++Type=dbus
++BusName=org.bluez
++ExecStart=@sbindir@/bluetoothd -n
++StandardOutput=syslog
++
++[Install]
++WantedBy=bluetooth.target
++Alias=dbus-org.bluez.service
++
+diff --git a/scripts/org.bluez.service b/scripts/org.bluez.service
+new file mode 100644
+index 0000000..dd7ae8f
+--- /dev/null
++++ b/scripts/org.bluez.service
+@@ -0,0 +1,5 @@
++[D-BUS Service]
++Name=org.bluez
++Exec=/bin/false
++User=root
++SystemdService=dbus-org.bluez.service
+-- 
+1.7.9.2
+

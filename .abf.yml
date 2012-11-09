@@ -1,0 +1,7 @@
+sources:
+  "bluez-4.101.tar.xz:"	5e6d94686b1a0492c4aed59ba16601f4903c15e8
+  "bluez-uinput.modules:"	de88fa01741cf44b3648dec077480286316186c2
+  "dund.conf:"	0edbf4d944d689cc0cfe344fe9fbbc4b61cd9265
+  "hidd.conf:"	110e6a43d8b88bc9617ace032fd2a61d32b304ef
+  "pand.conf:"	01ee6471da1988dbf4974ac25ebd081fec5c554e
+  "rfcomm.conf:"	36078a6767c28132799adb5627d99cde3e04f94f
