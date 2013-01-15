@@ -7,7 +7,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.101
-Release:	4
+Release:	5
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -20,7 +20,7 @@ Source10:	bluez-uinput.modules
 
 # http://thread.gmane.org/gmane.linux.bluez.kernel/8645
 Patch0:		0002-systemd-unitdir-enable.patch
-
+Patch1:		bluez-4.101-automake-1.13.patch
 Patch4:		bluez-socket-mobile-cf-connection-kit.patch
 # http://thread.gmane.org/gmane.linux.bluez.kernel/2396
 Patch5:		0001-Add-sixaxis-cable-pairing-plugin.patch
