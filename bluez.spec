@@ -7,7 +7,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	4.101
-Release:	5
+Release:	6
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -32,7 +32,7 @@ Patch9:		bluez-4.101-fix-c++11-compatibility.patch
 
 BuildRequires:	flex
 BuildRequires:	bison
-Buildrequires:	systemd
+BuildRequires:	systemd
 BuildRequires:	readline-devel
 BuildRequires:	expat-devel
 BuildRequires:	pkgconfig(alsa)
