@@ -97,7 +97,7 @@ fi
 /bin/hidd
 /sbin/bluetoothd
 %if %{with systemd}
-/lib/systemd/system/*.service
+%{_unitdir}/*.service
 %endif
 %{_mandir}/man?/*
 %config(noreplace) %{_sysconfdir}/sysconfig/*
@@ -280,7 +280,7 @@ mv %{buildroot}/%{_lib}/alsa-lib/*.so %{buildroot}%{_libdir}/alsa-lib/
 
 install -d -m0755 %{buildroot}%{_localstatedir}/lib/bluetooth
 
-ln -s bluetooth.service %buildroot/lib/systemd/system/dbus-org.bluez.service
+ln -s bluetooth.service %{buildroot}%{_unitdir}/dbus-org.bluez.service
 
 
 %changelog
