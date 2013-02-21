@@ -41,7 +41,7 @@ BuildRequires:	pkgconfig(gstreamer-plugins-base-0.10)
 BuildRequires:	pkgconfig(gstreamer-0.10)
 BuildRequires:	pkgconfig(libcap-ng)
 BuildRequires:	pkgconfig(libusb)
-BuildRequires:	usb1-devel
+BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(udev) >= 186
 
 Requires:	bluez-pin
