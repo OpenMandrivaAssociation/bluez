@@ -2,8 +2,6 @@
 %define libname	%mklibname %{name} %{major}
 %define	devname	%mklibname -d %{name}
 
-%bcond_without	systemd
-
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	5.8
@@ -30,16 +28,19 @@ BuildRequires:	bison
 BuildRequires:	systemd
 BuildRequires:	readline-devel
 BuildRequires:	expat-devel
-BuildRequires:	pkgconfig(alsa)
+BuildRequires:	cups-devel
 BuildRequires:	pkgconfig(dbus-1)
+BuildRequires:	pkgconfig(glib-2.0)
 BuildRequires:	pkgconfig(libcap-ng)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libusb-1.0)
+BuildRequires:	pkgconfig(libical)
 BuildRequires:	pkgconfig(udev) >= 186
 
 Requires:	bluez-pin
 Suggests:	obex-data-server
 Suggests:	bluez-firmware
+Obsoletes:	bluez-alsa < 5.0
 Obsoletes:	bluez-gstreamer < 5.0
 
 %description
@@ -73,36 +74,46 @@ fi
 
 %files
 %{_bindir}/ciptool
-%{_bindir}/dfutool
-%{_bindir}/gatttool
 %{_bindir}/hcitool
-%{_bindir}/hidd
 %{_bindir}/l2ping
 %{_bindir}/rfcomm
 %{_bindir}/sdptool
-### compat
-%{_bindir}/dund
-%{_bindir}/pand
-### 
-%{_sbindir}/bccmd
-%{_sbindir}/hciattach
-%{_sbindir}/hciconfig
-%{_sbindir}/bluetoothd
-/bin/hidd
-/sbin/bluetoothd
-%if %{with systemd}
-%{_unitdir}/*.service
-%endif
-%{_mandir}/man?/*
+%{_bindir}/bccmd
+%{_bindir}/bluetoothctl
+%{_bindir}/btmon
+%{_bindir}/hciattach
+%{_bindir}/hciconfig
+%{_bindir}/hcidump
+%{_bindir}/l2test
+%{_bindir}/rctest
+%{_mandir}/man1/ciptool.1*
+%{_mandir}/man1/hcitool.1*
+%{_mandir}/man1/hid2hci.1*
+%{_mandir}/man1/rfcomm.1*
+%{_mandir}/man1/sdptool.1*
+%{_mandir}/man1/bccmd.1.*
+%{_mandir}/man1/hciattach.1*
+%{_mandir}/man1/hciconfig.1*
+%{_mandir}/man1/hcidump.1*
+%{_mandir}/man1/l2ping.1*
+%{_mandir}/man1/rctest.1*
+%{_mandir}/man8/*
+%{_unitdir}/bluetooth.service
+%{_unitdir}/dbus-org.bluez.service
+%{_userunitdir}/obex.service
 %config(noreplace) %{_sysconfdir}/sysconfig/*
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
 %config(noreplace) %{_sysconfdir}/bluetooth
 %{_datadir}/dbus-1/system-services/org.bluez.service
-/lib/udev/bluetooth_serial
+%{_datadir}/dbus-1/services/org.bluez.obex.service
 /lib/udev/hid2hci
-%{_sysconfdir}/udev/rules.d/97-bluetooth-serial.rules
-%{_sysconfdir}/udev/rules.d/97-bluetooth-hid2hci.rules
+%{_sysconfdir}/udev/rules.d/97-hid2hci.rules
 %{_localstatedir}/lib/bluetooth
+%dir %{_libdir}/bluetooth
+%{_libdir}/bluetooth/bluetoothd
+%{_libdir}/bluetooth/obexd
+%dir %{_libdir}/bluetooth/plugins
+%{_libdir}/bluetooth/plugins/playstation-peripheral.so
 
 #--------------------------------------------------------------------
 
@@ -116,19 +127,6 @@ This package contains the CUPS backend for Bluetooth printers.
 
 %files		cups
 %{_prefix}/lib/cups/backend/bluetooth
-
-#--------------------------------------------------------------------
-
-%package	alsa
-Summary:	ALSA support for Bluetooth audio devices
-Group:		Sound
-
-%description	alsa
-This package contains ALSA support for Bluetooth audio devices
-
-%files		alsa
-%{_libdir}/alsa-lib/*.so
-%{_datadir}/alsa/bluetooth.conf
 
 #--------------------------------------------------------------------
 
@@ -174,7 +172,7 @@ applications which will use libraries from %{name}.
 %doc AUTHORS ChangeLog README
 %dir %{_includedir}/bluetooth
 %{_includedir}/bluetooth/*.h
-/%{_lib}/*.so
+%{_libdir}/*.so
 %{_libdir}/pkgconfig/bluez.pc
 
 #--------------------------------------------------------------------
@@ -188,73 +186,66 @@ autoreconf -fi
 
 %build
 %configure2_5x	\
-	--libdir=/%{_lib} \
-%if !%{with systemd}
-	--without-systemdsystemunitdir \
-%endif
 	--enable-cups \
-	--enable-dfutool \
-	--enable-audio \
-	--enable-health \
-	--disable-hal \
-	--enable-pnat \
-	--enable-wiimote \
+	--enable-udev \
 	--enable-tools \
-	--enable-bccmd \
-	--enable-hidd \
-	--enable-pand \
-	--enable-dund \
-	--enable-hid2hci \
-	--enable-pcmcia \
-	--with-systemdsystemunitdir=/lib/systemd/system
+	--enable-library \
+	--enable-usb \
+	--enable-threads \
+	--enable-monitor \
+	--enable-obex \
+	--enable-client \
+	--enable-systemd \
+	--with-systemdsystemunitdir=%{_unitdir} \
+	--with-systemduserunitdir=%{_userunitdir} \
+	--with-udevdir=/lib/udev \
+	--enable-datafiles \
+	--enable-experimental \
+	--enable-playstation-peripheral
 
 %make
 
 %install
 %makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
 
+install -d %{buildroot}%{_sysconfdir}/bluetooth
 cat << EOF > %{buildroot}%{_sysconfdir}/bluetooth/pin
 1234
 EOF
 
 chmod 600 %{buildroot}%{_sysconfdir}/bluetooth/pin
 
-rm -f %{buildroot}%{_sysconfdir}/default/bluetooth %{buildroot}%{_sysconfdir}/init.d/bluetooth
 install -m644 %{SOURCE6} -D %{buildroot}%{_sysconfdir}/sysconfig/pand
 install -m644 %{SOURCE7} -D %{buildroot}%{_sysconfdir}/sysconfig/dund
 install -m644 %{SOURCE8} -D %{buildroot}%{_sysconfdir}/sysconfig/hidd
 install -m644 %{SOURCE9} -D %{buildroot}%{_sysconfdir}/sysconfig/rfcomm
 
-rm -rf %{buildroot}/%{_lib}/pkgconfig
-install -m644 bluez.pc -D  %{buildroot}%{_libdir}/pkgconfig/bluez.pc
+mkdir %{buildroot}/%{_lib}
+mv %{buildroot}%{_libdir}/libbluetooth.so.%{major}* %{buildroot}/%{_lib}
+ln -srf %{buildroot}/%{_lib}/libbluetooth.so.%{major}.*.* %{buildroot}%{_libdir}/libbluetooth.so
 
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
-if test -d %{buildroot}/%{_lib}/cups ; then
-	install -D -m0755 %{buildroot}/%{_lib}/cups/backend/bluetooth %{buildroot}%{_prefix}/lib/cups/backend/bluetooth
-	rm -rf %{buildroot}/%{_lib}/cups
-fi 
-	
+install -d %{buildroot}%{_prefix}/lib
+mv %{buildroot}%{_libdir}/cups %{buildroot}%{_prefix}/lib/cups
+
 cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
-rm -f %{buildroot}%{_bindir}/test-*.c
 
-mkdir -p %{buildroot}/{bin,sbin}
-mv %{buildroot}%{_bindir}/hidd %{buildroot}/bin
-mv %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin
+#mkdir -p %{buildroot}/{bin,sbin}
+#mv %{buildroot}%{_bindir}/hidd %{buildroot}/bin
+#mv %{buildroot}%{_sbindir}/bluetoothd %{buildroot}/sbin
 # sym link just to be safe
-pushd %{buildroot}
-ln -s /bin/hidd %{buildroot}%{_bindir}/hidd
-ln -s /sbin/bluetoothd %{buildroot}%{_sbindir}/bluetoothd
-popd
+#pushd %{buildroot}
+#ln -s /bin/hidd %{buildroot}%{_bindir}/hidd
+#ln -s /sbin/bluetoothd %{buildroot}%{_sbindir}/bluetoothd
+#popd
 
 #install more config files
-install -m0644 audio/audio.conf %{buildroot}%{_sysconfdir}/bluetooth/
-install -m0644 network/network.conf %{buildroot}%{_sysconfdir}/bluetooth/
-install -m0644 input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
-install -m0644 serial/serial.conf %{buildroot}%{_sysconfdir}/bluetooth/
-
-mkdir -p %{buildroot}%{_libdir}/alsa-lib/
-mv %{buildroot}/%{_lib}/alsa-lib/*.so %{buildroot}%{_libdir}/alsa-lib/
+#install -m0644 audio/audio.conf %{buildroot}%{_sysconfdir}/bluetooth/
+install -m0644 profiles/network/network.conf %{buildroot}%{_sysconfdir}/bluetooth/
+install -m0644 profiles/input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
+install -m0644 profiles/proximity/proximity.conf %{buildroot}%{_sysconfdir}/bluetooth/
+#install -m0644 serial/serial.conf %{buildroot}%{_sysconfdir}/bluetooth/
 
 install -d -m0755 %{buildroot}%{_localstatedir}/lib/bluetooth
 
