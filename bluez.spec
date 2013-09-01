@@ -40,6 +40,7 @@ BuildRequires:	pkgconfig(udev) >= 186
 Requires:	bluez-pin
 Suggests:	obex-data-server
 Suggests:	bluez-firmware
+Obsoletes:	bluez-gstreamer < 5.0
 
 %description
 These are the official Bluetooth communication libraries for Linux.
