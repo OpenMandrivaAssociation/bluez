@@ -6,8 +6,8 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	4.101
-Release:	6
+Version:	5.8
+Release:	1
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -18,16 +18,6 @@ Source8:	hidd.conf
 Source9:	rfcomm.conf
 Source10:	bluez-uinput.modules
 
-# http://thread.gmane.org/gmane.linux.bluez.kernel/8645
-Patch0:		0002-systemd-unitdir-enable.patch
-Patch1:		bluez-4.101-automake-1.13.patch
-Patch4:		bluez-socket-mobile-cf-connection-kit.patch
-# http://thread.gmane.org/gmane.linux.bluez.kernel/2396
-Patch5:		0001-Add-sixaxis-cable-pairing-plugin.patch
-# PS3 BD Remote patches
-Patch6:		0001-input-Add-helper-function-to-request-disconnect.patch
-Patch7:		0002-fakehid-Disconnect-from-PS3-remote-after-10-mins.patch
-Patch8:		0003-fakehid-Use-the-same-constant-as-declared.patch
 Patch9:		bluez-4.101-fix-c++11-compatibility.patch
 
 BuildRequires:	flex
