@@ -32,8 +32,6 @@ BuildRequires:	readline-devel
 BuildRequires:	expat-devel
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(dbus-1)
-BuildRequires:	pkgconfig(gstreamer-plugins-base-0.10)
-BuildRequires:	pkgconfig(gstreamer-0.10)
 BuildRequires:	pkgconfig(libcap-ng)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libusb-1.0)
@@ -120,18 +118,6 @@ This package contains the CUPS backend for Bluetooth printers.
 
 #--------------------------------------------------------------------
 
-%package	gstreamer
-Summary:	Gstreamer support for SBC audio format
-Group:		Sound
-
-%description	gstreamer
-This package contains gstreamer plugins for the Bluetooth SBC audio format
-
-%files		gstreamer
-%{_libdir}/gstreamer-*/*.so
-
-#--------------------------------------------------------------------
-
 %package	alsa
 Summary:	ALSA support for Bluetooth audio devices
 Group:		Sound
@@ -214,7 +200,6 @@ autoreconf -fi
 	--enable-wiimote \
 	--enable-tools \
 	--enable-bccmd \
-	--enable-gstreamer \
 	--enable-hidd \
 	--enable-pand \
 	--enable-dund \
@@ -226,9 +211,6 @@ autoreconf -fi
 
 %install
 %makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
-
-mkdir -p %{buildroot}%{_libdir}
-mv %{buildroot}/%{_lib}/gstreamer-0.10 %{buildroot}%{_libdir}
 
 cat << EOF > %{buildroot}%{_sysconfdir}/bluetooth/pin
 1234
