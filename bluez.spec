@@ -18,6 +18,11 @@ Source8:	hidd.conf
 Source9:	rfcomm.conf
 Source10:	bluez-uinput.modules
 
+## https://bugzilla.redhat.com/show_bug.cgi?id=874015#c0
+Patch1:		playstation-peripheral-pugin-v5.x.patch
+## Ubuntu patches
+Patch2:		0001-work-around-Logitech-diNovo-Edge-keyboard-firmware-i.patch
+
 Patch9:		bluez-4.101-fix-c++11-compatibility.patch
 
 BuildRequires:	flex
