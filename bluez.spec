@@ -220,7 +220,7 @@ install -m644 %{SOURCE7} -D %{buildroot}%{_sysconfdir}/sysconfig/dund
 install -m644 %{SOURCE8} -D %{buildroot}%{_sysconfdir}/sysconfig/hidd
 install -m644 %{SOURCE9} -D %{buildroot}%{_sysconfdir}/sysconfig/rfcomm
 
-mkdir %{buildroot}/%{_lib}
+mkdir -p %{buildroot}/%{_lib}
 mv %{buildroot}%{_libdir}/libbluetooth.so.%{major}* %{buildroot}/%{_lib}
 ln -srf %{buildroot}/%{_lib}/libbluetooth.so.%{major}.*.* %{buildroot}%{_libdir}/libbluetooth.so
 
