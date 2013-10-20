@@ -225,8 +225,10 @@ mv %{buildroot}%{_libdir}/libbluetooth.so.%{major}* %{buildroot}/%{_lib}
 ln -srf %{buildroot}/%{_lib}/libbluetooth.so.%{major}.*.* %{buildroot}%{_libdir}/libbluetooth.so
 
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
+%if "%{_lib}" == "lib64"
 install -d %{buildroot}%{_prefix}/lib
 mv %{buildroot}%{_libdir}/cups %{buildroot}%{_prefix}/lib/cups
+%endif
 
 cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
