@@ -4,7 +4,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.10
+Version:	5.11
 Release:	1
 License:	GPLv2+
 Group:		Communications
@@ -20,6 +20,8 @@ Source10:	bluez-uinput.modules
 Patch1:		playstation-peripheral-pugin-v5.x.patch
 ## Ubuntu patches
 Patch2:		0001-work-around-Logitech-diNovo-Edge-keyboard-firmware-i.patch
+# Non-upstream
+Patch3:		0001-Allow-using-obexd-without-systemd-in-the-user-sessio.patch
 
 Patch9:		bluez-4.101-fix-c++11-compatibility.patch
 
