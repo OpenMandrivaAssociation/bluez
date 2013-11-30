@@ -5,7 +5,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	5.11
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -41,7 +41,6 @@ BuildRequires:	pkgconfig(udev) >= 186
 
 Requires:	bluez-pin
 Suggests:	obex-data-server
-Suggests:	bluez-firmware
 Obsoletes:	bluez-alsa < 5.0
 Obsoletes:	bluez-gstreamer < 5.0
 
