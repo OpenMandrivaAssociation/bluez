@@ -48,7 +48,6 @@ BuildRequires:	pkgconfig(systemd)
 
 Requires:	bluez-pin
 Suggests:	obex-data-server
-Suggests:	bluez-firmware
 
 %description
 These are the official Bluetooth communication libraries for Linux.
