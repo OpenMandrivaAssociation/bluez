@@ -1,4 +1,2 @@
-removed_sources:
-  bluez-4.101.tar.xz: 5e6d94686b1a0492c4aed59ba16601f4903c15e8
 sources:
-  bluez-5.12.tar.xz: 8b8dfea7947da3231e91cf0603ef82adf964a38c
+  bluez-5.13.tar.xz: 1bb018e4a38f249590d122480ae362c8eaea520f
