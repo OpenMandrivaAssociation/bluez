@@ -7,7 +7,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	5.17
-Release:	2
+Release:	3
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -239,6 +239,7 @@ install -D -p -m0644 tools/hid2hci.rules %{buildroot}/lib/udev/rules.d/97-hid2hc
 
 #install more config files
 install -m0644 profiles/network/network.conf %{buildroot}%{_sysconfdir}/bluetooth/
+install -m0644 src/main.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 profiles/input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
 
 install -d -m0755 %{buildroot}%{_localstatedir}/lib/bluetooth
