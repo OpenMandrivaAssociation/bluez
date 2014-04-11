@@ -6,7 +6,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.15
+Version:	5.17
 Release:	1
 License:	GPLv2+
 Group:		Communications
@@ -203,22 +203,10 @@ autoreconf -fi
 	--without-systemdsystemunitdir \
 %endif
 	--enable-cups \
-	--enable-dfutool \
-	--enable-audio \
-	--enable-health \
 	--enable-sixaxis \
 	--enable-shared \
-	--disable-hal \
-	--enable-pnat \
-	--enable-wiimote \
 	--enable-tools \
-	--enable-bccmd \
-	--enable-hidd \
-	--enable-pand \
-	--enable-dund \
-	--enable-hid2hci \
 	--enable-library \
-	--enable-pcmcia \
 	--with-systemdsystemunitdir=/lib/systemd/system
 
 %make
