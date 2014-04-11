@@ -1,4 +1,5 @@
 removed_sources:
   bluez-5.13.tar.xz: 1bb018e4a38f249590d122480ae362c8eaea520f
-sources:
   bluez-5.15.tar.xz: 030cfe150874ef4627ff09af7ff140c2fc938233
+sources:
+  bluez-5.17.tar.xz: 82307d351b25de95c2f58941e85ee1b01bce37b4
