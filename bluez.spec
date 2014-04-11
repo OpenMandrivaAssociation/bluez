@@ -7,7 +7,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	5.17
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -48,13 +48,13 @@ Suggests:	obex-data-server
 These are the official Bluetooth communication libraries for Linux.
 
 %post
-update-alternatives --install /bin/bluepin bluepin /usr/bin/bluepin 5
 %_post_service bluetooth
 
+%post hid2hci
+/sbin/udevadm trigger --subsystem-match=usb
+
 %postun
-if [ "$1" = "0" ]; then
-  update-alternatives --remove bluepin /usr/bin/bluepin
-fi
+%_preun_service bluetooth
 
 %files
 %{_bindir}/ciptool
