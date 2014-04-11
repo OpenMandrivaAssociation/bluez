@@ -50,9 +50,6 @@ These are the official Bluetooth communication libraries for Linux.
 %post
 %_post_service bluetooth
 
-%post hid2hci
-/sbin/udevadm trigger --subsystem-match=usb
-
 %postun
 %_preun_service bluetooth
 
