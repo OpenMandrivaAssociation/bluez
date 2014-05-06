@@ -745,7 +745,7 @@
 +	if (str == NULL)
 +		return NULL;
 +
-+	ba2str(adapter_get_address(adapter), str);
++	ba2str(btd_adapter_get_address(adapter), str);
 +	return str;
 +}
 +
@@ -785,7 +785,7 @@
 +	}
 +
 +	/* This will create the device if necessary */
-+	device = adapter_get_device(adapter, &dst, BDADDR_BREDR);
++	device = btd_adapter_get_device(adapter, &dst, BDADDR_BREDR);
 +	if (device == NULL) {
 +		DBG("Failed to get the device");
 +		ret = -ENODEV;
@@ -793,7 +793,7 @@
 +	}
 +
 +	if (name)
-+		device_set_name(device, name);
++		btd_device_device_set_name(device, name);
 +
 +	btd_device_set_pnpid(device, vendor_id_source,
 +			vendor_id, product_id, version_id);
@@ -801,10 +801,10 @@
 +	if (uuid)
 +		btd_device_add_uuid(device, uuid);
 +
-+	device_set_temporary(device, FALSE);
++	btd_device_set_temporary(device, FALSE);
 +
 +	if (trusted)
-+		device_set_trusted(device, TRUE);
++		btd_device_set_trusted(device, TRUE);
 +out:
 +	return ret;
 +}
@@ -823,7 +823,7 @@
  			void (*cb)(struct btd_device *device, void *data),
  			void *data);
 +
-+int btd_create_stored_device(char *adapter_address,
++int btd_create_stored_device(char *btd_adapter_address,
 +			     char *device_address,
 +			     char *name,
 +			     uint16_t vendor_id_source,
