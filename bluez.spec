@@ -4,8 +4,8 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.17
-Release:	3
+Version:	5.18
+Release:	1
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -26,7 +26,6 @@ Patch3:		0001-Allow-using-obexd-without-systemd-in-the-user-sessio.patch
 Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
 Patch5:		0002-autopair-Don-t-handle-the-iCade.patch
 Patch7:		0004-agent-Assert-possible-infinite-loop.patch
-Patch9:		bluez-4.101-fix-c++11-compatibility.patch
 
 Requires(pre):	rpm-helper
 
@@ -209,7 +208,7 @@ autoreconf -fi
 %build
 %configure2_5x	\
 	--enable-cups \
-	--enable-sixaxis
+	--enable-sixaxis \
 	--enable-udev \
 	--enable-tools \
 	--enable-library \
