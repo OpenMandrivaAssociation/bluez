@@ -4,8 +4,8 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.15
-Release:	1
+Version:	5.17
+Release:	3
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -54,13 +54,10 @@ Obsoletes:	bluez-gstreamer < 5.0
 These are the official Bluetooth communication libraries for Linux.
 
 %post
-update-alternatives --install /bin/bluepin bluepin /usr/bin/bluepin 5
 %_post_service bluetooth
 
 %postun
-if [ "$1" = "0" ]; then
-  update-alternatives --remove bluepin /usr/bin/bluepin
-fi
+%_preun_service bluetooth
 
 %files
 %{_bindir}/ciptool
@@ -259,16 +256,17 @@ cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
 
 rm %{buildroot}%{_sysconfdir}/udev/rules.d/*.rules
 rm %{buildroot}/lib/udev/rules.d/*.rules
-install -D -p -m0644 tools/hid2hci.rules %{buildroot}/lib/udev/rules.d/97-hid2hci.rules
+install -p -m644 tools/hid2hci.rules -D %{buildroot}/lib/udev/rules.d/97-hid2hci.rules
 
 #install more config files
 install -m0644 profiles/network/network.conf %{buildroot}%{_sysconfdir}/bluetooth/
+install -m0644 src/main.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 profiles/input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 profiles/proximity/proximity.conf %{buildroot}%{_sysconfdir}/bluetooth/
 
 rm %{buildroot}%{_sysconfdir}/udev/rules.d/*.rules
 rm %{buildroot}/lib/udev/rules.d/*.rules
-install -D -p -m0644 tools/hid2hci.rules %{buildroot}/lib/udev/rules.d/97-hid2hci.rules
+install -p -m644 tools/hid2hci.rules -D %{buildroot}/lib/udev/rules.d/97-hid2hci.rules
 
 
 install -d -m0755 %{buildroot}%{_localstatedir}/lib/bluetooth
