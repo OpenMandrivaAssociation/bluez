@@ -70,12 +70,7 @@ These are the official Bluetooth communication libraries for Linux.
 %{_bindir}/hciattach
 %{_bindir}/hciconfig
 %{_bindir}/hcidump
-%{_bindir}/l2test
-%{_bindir}/rctest
 %{_bindir}/bluemoon
-%dir %{_libdir}/bluetooth/plugins
-%{_libdir}/bluetooth/plugins/*.so
-%dir %{_libdir}/bluetooth
 %{_libexecdir}/bluetooth/bluetoothd
 %{_libexecdir}/bluetooth/obexd
 %{_unitdir}/bluetooth.service
@@ -99,10 +94,10 @@ These are the official Bluetooth communication libraries for Linux.
 %{_datadir}/dbus-1/services/org.bluez.obex.service
 %{_localstatedir}/lib/bluetooth
 %dir %{_libdir}/bluetooth
-%{_libdir}/bluetooth/bluetoothd
-%{_libdir}/bluetooth/obexd
 %dir %{_libdir}/bluetooth/plugins
+%{_libdir}/bluetooth/plugins/sixaxis.so
 %{_libdir}/bluetooth/plugins/playstation-peripheral.so
+
 
 #--------------------------------------------------------------------
 
@@ -127,7 +122,7 @@ Group:		System/Libraries
 These are the official Bluetooth communication libraries for Linux.
 
 %files -n %{libname}
-%{_libdir}/libbluetooth.so.%{major}*
+/%{_lib}/libbluetooth.so.%{major}*
 #--------------------------------------------------------------------
 
 %package	hid2hci
@@ -254,7 +249,6 @@ cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
 
 rm %{buildroot}%{_sysconfdir}/udev/rules.d/*.rules
-rm %{buildroot}/lib/udev/rules.d/*.rules
 install -p -m644 tools/hid2hci.rules -D %{buildroot}/lib/udev/rules.d/97-hid2hci.rules
 
 #install more config files
@@ -262,11 +256,6 @@ install -m0644 profiles/network/network.conf %{buildroot}%{_sysconfdir}/bluetoot
 install -m0644 src/main.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 profiles/input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 profiles/proximity/proximity.conf %{buildroot}%{_sysconfdir}/bluetooth/
-
-rm %{buildroot}%{_sysconfdir}/udev/rules.d/*.rules
-rm %{buildroot}/lib/udev/rules.d/*.rules
-install -p -m644 tools/hid2hci.rules -D %{buildroot}/lib/udev/rules.d/97-hid2hci.rules
-
 
 install -d -m0755 %{buildroot}%{_localstatedir}/lib/bluetooth
 
