@@ -27,8 +27,6 @@ Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
 Patch5:		0002-autopair-Don-t-handle-the-iCade.patch
 Patch7:		0004-agent-Assert-possible-infinite-loop.patch
 
-Requires(pre):	rpm-helper
-
 BuildRequires:	flex
 BuildRequires:	bison
 BuildRequires:	readline-devel
@@ -50,12 +48,6 @@ Obsoletes:	bluez-gstreamer < 5.0
 
 %description
 These are the official Bluetooth communication libraries for Linux.
-
-%post
-%_post_service bluetooth
-
-%postun
-%_preun_service bluetooth
 
 %files
 %{_bindir}/ciptool
