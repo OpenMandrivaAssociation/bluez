@@ -44,7 +44,7 @@ BuildRequires:	pkgconfig(udev) >= 186
 BuildRequires:	pkgconfig(libical)
 BuildRequires:	pkgconfig(systemd)
 
-Suggests:	obex-data-server
+Obsoletes:	obex-data-server < 0.4.7
 Obsoletes:	bluez-alsa < 5.0
 Obsoletes:	bluez-gstreamer < 5.0
 
