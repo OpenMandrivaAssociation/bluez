@@ -1,24 +1,6 @@
---- bluez-5.18/Makefile.am.playstation~	2014-03-25 21:53:41.000000000 +0100
-+++ bluez-5.18/Makefile.am	2014-05-06 22:13:18.967174167 +0200
-@@ -115,6 +115,15 @@ builtin_nodist =
- 
- include Makefile.plugins
- 
-+if PLAYSTATION_PERIPHERAL_PLUGIN
-+plugin_LTLIBRARIES += plugins/playstation-peripheral.la
-+plugins_playstation_peripheral_la_DEPENDENCIES = src/bluetoothd
-+plugins_playstation_peripheral_la_SOURCES = plugins/playstation-peripheral.c plugins/playstation-peripheral-hid.c
-+plugins_playstation_peripheral_la_LDFLAGS = -module -avoid-version -no-undefined @UDEV_LIBS@
-+plugins_playstation_peripheral_la_CFLAGS = -fvisibility=hidden @DBUS_CFLAGS@ @GLIB_CFLAGS@ @UDEV_CFLAGS@
-+plugins_playstation_peripheral_la_CPPFLAGS = -I$(srcdir)/src -I$(srcdir)/lib
-+endif
-+
- if MAINTAINER_MODE
- plugin_LTLIBRARIES += plugins/external-dummy.la
- plugins_external_dummy_la_SOURCES = plugins/external-dummy.c
---- bluez-5.18/configure.ac.playstation~	2014-04-12 12:13:29.000000000 +0200
-+++ bluez-5.18/configure.ac	2014-05-06 22:09:30.225172158 +0200
-@@ -221,6 +221,16 @@ AC_ARG_ENABLE(sixaxis, AC_HELP_STRING([-
+--- bluez-5.25/configure.ac.0001~	2014-11-09 18:13:59.000000000 +0100
++++ bluez-5.25/configure.ac	2014-11-30 13:53:12.404487656 +0100
+@@ -226,6 +226,16 @@ AC_ARG_ENABLE(sixaxis, AC_HELP_STRING([-
  AM_CONDITIONAL(SIXAXIS, test "${enable_sixaxis}" = "yes" &&
  					 test "${enable_udev}" != "no")
  
@@ -35,287 +17,26 @@
  if (test "${prefix}" = "NONE"); then
  	dnl no prefix and no localstatedir, so default to /var
  	if (test "$localstatedir" = '${prefix}/var'); then
---- bluez-5.18/plugins/playstation-peripheral-hid.c.playstation~	2014-05-06 22:09:30.225172158 +0200
-+++ bluez-5.18/plugins/playstation-peripheral-hid.c	2014-05-06 22:09:30.225172158 +0200
-@@ -0,0 +1,263 @@
-+/*
-+ * playstation peripheral plugin: lowlevel hid functions
-+ *
-+ * Copyright (C) 2011  Antonio Ospite <ospite@studenti.unina.it>
-+ *
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ */
+--- bluez-5.25/Makefile.am.0001~	2014-11-09 18:13:59.000000000 +0100
++++ bluez-5.25/Makefile.am	2014-11-30 13:53:12.404487656 +0100
+@@ -147,6 +147,15 @@ builtin_nodist =
+ 
+ include Makefile.plugins
+ 
++if PLAYSTATION_PERIPHERAL_PLUGIN
++plugin_LTLIBRARIES += plugins/playstation-peripheral.la
++plugins_playstation_peripheral_la_DEPENDENCIES = src/bluetoothd
++plugins_playstation_peripheral_la_SOURCES = plugins/playstation-peripheral.c plugins/playstation-peripheral-hid.c
++plugins_playstation_peripheral_la_LDFLAGS = -module -avoid-version -no-undefined @UDEV_LIBS@
++plugins_playstation_peripheral_la_CFLAGS = -fvisibility=hidden @DBUS_CFLAGS@ @GLIB_CFLAGS@ @UDEV_CFLAGS@
++plugins_playstation_peripheral_la_CPPFLAGS = -I$(srcdir)/src -I$(srcdir)/lib
++endif
 +
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <stdint.h>
-+#include <sys/ioctl.h>
-+#include <unistd.h>
-+#include <errno.h>
-+
-+#include <linux/hidraw.h>
-+
-+#include "log.h"
-+#include "playstation-peripheral-hid.h"
-+
-+/* Fallback definitions to compile with older headers */
-+#ifndef HIDIOCGFEATURE
-+#define HIDIOCGFEATURE(len)    _IOC(_IOC_WRITE|_IOC_READ, 'H', 0x07, len)
-+#endif
-+
-+#ifndef HIDIOCSFEATURE
-+#define HIDIOCSFEATURE(len)    _IOC(_IOC_WRITE|_IOC_READ, 'H', 0x06, len)
-+#endif
-+
-+#define BDADDR_STR_SIZE 18 /* strlen("00:00:00:00:00:00") + 1 */
-+
-+#define LED_1 (0x01 << 1)
-+#define LED_2 (0x01 << 2)
-+#define LED_3 (0x01 << 3)
-+#define LED_4 (0x01 << 4)
-+
-+#define LED_STATUS_OFF 0
-+#define LED_STATUS_ON  1
-+
-+/* Usb cable pairing section */
-+static unsigned char *get_feature_report(int fd, uint8_t report_number,
-+						unsigned int len)
-+{
-+	unsigned char *buf;
-+	int ret;
-+
-+	buf = calloc(len, sizeof(*buf));
-+	if (buf == NULL) {
-+		error("%s:%s() calloc failed", __FILE__, __func__);
-+		return NULL;
-+	}
-+
-+	buf[0] = report_number;
-+
-+	ret = ioctl(fd, HIDIOCGFEATURE(len), buf);
-+	if (ret < 0) {
-+		error("%s:%s() HIDIOCGFEATURE ret = %d",
-+			__FILE__, __func__, ret);
-+		free(buf);
-+		return NULL;
-+	}
-+
-+	return buf;
-+}
-+
-+static int set_feature_report(int fd, uint8_t *report, int len)
-+{
-+	int ret;
-+
-+	ret = ioctl(fd, HIDIOCSFEATURE(len), report);
-+	if (ret < 0)
-+		error("%s:%s() HIDIOCSFEATURE failed, ret = %d",
-+			__FILE__, __func__, ret);
-+
-+	return ret;
-+}
-+
-+char *sixaxis_get_device_bdaddr(int fd)
-+{
-+	unsigned char *buf;
-+	char *address;
-+
-+	buf = get_feature_report(fd, 0xf2, 18);
-+	if (buf == NULL) {
-+		error("%s:%s() cannot get feature report", __FILE__, __func__);
-+		return NULL;
-+	}
-+
-+	address = calloc(BDADDR_STR_SIZE, sizeof(*address));
-+	if (address == NULL) {
-+		error("%s:%s() calloc failed", __FILE__, __func__);
-+		free(buf);
-+		return NULL;
-+	}
-+
-+	snprintf(address, BDADDR_STR_SIZE,
-+			"%02X:%02X:%02X:%02X:%02X:%02X",
-+			buf[4], buf[5], buf[6], buf[7], buf[8], buf[9]);
-+
-+	free(buf);
-+	return address;
-+}
-+
-+char *sixaxis_get_master_bdaddr(int fd)
-+{
-+	unsigned char *buf;
-+	char *address;
-+
-+	buf = get_feature_report(fd, 0xf5, 8);
-+	if (buf == NULL) {
-+		error("%s:%s() cannot get feature report", __FILE__, __func__);
-+		return NULL;
-+	}
-+
-+	address = calloc(BDADDR_STR_SIZE, sizeof(*address));
-+	if (address == NULL) {
-+		error("%s:%s() calloc failed", __FILE__, __func__);
-+		free(buf);
-+		return NULL;
-+	}
-+
-+	snprintf(address, BDADDR_STR_SIZE,
-+			"%02X:%02X:%02X:%02X:%02X:%02X",
-+			buf[2], buf[3], buf[4], buf[5], buf[6], buf[7]);
-+
-+	free(buf);
-+	return address;
-+}
-+
-+int sixaxis_set_master_bdaddr(int fd, char *adapter_bdaddr)
-+{
-+	uint8_t *report;
-+	uint8_t addr[6];
-+	int ret;
-+
-+	ret = sscanf(adapter_bdaddr,
-+			"%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx",
-+			&addr[0], &addr[1], &addr[2],
-+			&addr[3], &addr[4], &addr[5]);
-+	if (ret != 6) {
-+		error("%s:%s() Parsing the bt address failed",
-+			__FILE__, __func__);
-+		return -EINVAL;
-+	}
-+
-+	report = malloc(8);
-+	if (report == NULL) {
-+		error("%s:%s() malloc failed", __FILE__, __func__);
-+		return -ENOMEM;
-+	}
-+
-+	report[0] = 0xf5;
-+	report[1] = 0x01;
-+
-+	report[2] = addr[0];
-+	report[3] = addr[1];
-+	report[4] = addr[2];
-+	report[5] = addr[3];
-+	report[6] = addr[4];
-+	report[7] = addr[5];
-+
-+	ret = set_feature_report(fd, report, 8);
-+	if (ret < 0) {
-+		error("%s:%s() cannot set feature report",
-+			__FILE__, __func__);
-+		goto out;
-+	}
-+
-+	DBG("New Master Bluetooth address: %s", adapter_bdaddr);
-+
-+out:
-+	free(report);
-+	return ret;
-+}
-+
-+
-+/* Led setting section */
-+static int set_leds(int fd, unsigned char leds_status[4])
-+{
-+	int ret;
-+
-+	/*
-+	 * the total time the led is active (0xff means forever)
-+	 * |     duty_length: how long a cycle is in deciseconds:
-+	 * |     |                              (0 means "blink very fast")
-+	 * |     |     ??? (Maybe a phase shift or duty_length multiplier?)
-+	 * |     |     |     % of duty_length led is off (0xff means 100%)
-+	 * |     |     |     |     % of duty_length led is on (0xff is 100%)
-+	 * |     |     |     |     |
-+	 * 0xff, 0x27, 0x10, 0x00, 0x32,
-+	 */
-+	unsigned char leds_report[] = {
-+		0x01,
-+		0x00, 0x00, 0x00, 0x00, 0x00, /* rumble values TBD */
-+		0x00, 0x00, 0x00, 0x00, 0x1e, /* LED_1=0x02, LED_2=0x04 ... */
-+		0xff, 0x27, 0x10, 0x00, 0x32, /* LED_4 */
-+		0xff, 0x27, 0x10, 0x00, 0x32, /* LED_3 */
-+		0xff, 0x27, 0x10, 0x00, 0x32, /* LED_2 */
-+		0xff, 0x27, 0x10, 0x00, 0x32, /* LED_1 */
-+		0x00, 0x00, 0x00, 0x00, 0x00,
-+	};
-+
-+	int leds = 0;
-+	if (leds_status[0])
-+		leds |= LED_1;
-+	if (leds_status[1])
-+		leds |= LED_2;
-+	if (leds_status[2])
-+		leds |= LED_3;
-+	if (leds_status[3])
-+		leds |= LED_4;
-+
-+	leds_report[10] = leds;
-+
-+	ret = write(fd, leds_report, sizeof(leds_report));
-+	if (ret < (ssize_t) sizeof(leds_report))
-+		error("%s:%s() Unable to write to hidraw device",
-+			__FILE__, __func__);
-+
-+	return ret;
-+}
-+
-+int set_controller_number(int fd, unsigned int n)
-+{
-+	unsigned char leds_status[4] = {0, 0, 0, 0};
-+
-+	switch (n) {
-+	case 0:
-+		break;
-+	case 1:
-+	case 2:
-+	case 3:
-+	case 4:
-+		leds_status[n - 1] = LED_STATUS_ON;
-+		break;
-+	case 5:
-+	case 6:
-+	case 7:
-+		leds_status[4 - 1] = LED_STATUS_ON;
-+		leds_status[n - 4 - 1] = LED_STATUS_ON;
-+		break;
-+	default:
-+		error("%s:%s() Only 7 controllers supported for now",
-+			__FILE__, __func__);
-+		return -1;
-+	}
-+
-+	return set_leds(fd, leds_status);
-+}
---- bluez-5.18/plugins/playstation-peripheral-hid.h.playstation~	2014-05-06 22:09:30.226172158 +0200
-+++ bluez-5.18/plugins/playstation-peripheral-hid.h	2014-05-06 22:09:30.226172158 +0200
-@@ -0,0 +1,10 @@
-+#ifndef __PLAYSTATION_PERIPHERAL_HID_H
-+#define __PLAYSTATION_PERIPHERAL_HID_H
-+
-+char *sixaxis_get_device_bdaddr(int fd);
-+char *sixaxis_get_master_bdaddr(int fd);
-+int sixaxis_set_master_bdaddr(int fd, char *adapter_bdaddr);
-+
-+int set_controller_number(int fd, unsigned int n);
-+
-+#endif /* __PLAYSTATION_PERIPHERAL_HID_H */
---- bluez-5.18/plugins/playstation-peripheral.c.playstation~	2014-05-06 22:09:30.227172158 +0200
-+++ bluez-5.18/plugins/playstation-peripheral.c	2014-05-06 22:09:30.227172158 +0200
+ if MAINTAINER_MODE
+ plugin_LTLIBRARIES += plugins/external-dummy.la
+ plugins_external_dummy_la_SOURCES = plugins/external-dummy.c
+--- bluez-5.25/plugins/playstation-peripheral.c.0001~	2014-11-30 13:53:12.404487656 +0100
++++ bluez-5.25/plugins/playstation-peripheral.c	2014-11-30 13:53:12.404487656 +0100
 @@ -0,0 +1,409 @@
 +/*
 + * playstation peripheral plugin: support for Playstation peripherals
@@ -726,9 +447,288 @@
 +			BLUETOOTH_PLUGIN_PRIORITY_DEFAULT,
 +			playstation_peripheral_init,
 +			playstation_peripheral_exit)
---- bluez-5.18/src/adapter.c.playstation~	2014-04-12 12:13:29.000000000 +0200
-+++ bluez-5.18/src/adapter.c	2014-05-06 22:09:30.229172158 +0200
-@@ -240,6 +240,23 @@ struct btd_adapter *btd_adapter_get_defa
+--- bluez-5.25/plugins/playstation-peripheral-hid.c.0001~	2014-11-30 13:53:12.404487656 +0100
++++ bluez-5.25/plugins/playstation-peripheral-hid.c	2014-11-30 13:53:12.404487656 +0100
+@@ -0,0 +1,263 @@
++/*
++ * playstation peripheral plugin: lowlevel hid functions
++ *
++ * Copyright (C) 2011  Antonio Ospite <ospite@studenti.unina.it>
++ *
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ *
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdint.h>
++#include <sys/ioctl.h>
++#include <unistd.h>
++#include <errno.h>
++
++#include <linux/hidraw.h>
++
++#include "log.h"
++#include "playstation-peripheral-hid.h"
++
++/* Fallback definitions to compile with older headers */
++#ifndef HIDIOCGFEATURE
++#define HIDIOCGFEATURE(len)    _IOC(_IOC_WRITE|_IOC_READ, 'H', 0x07, len)
++#endif
++
++#ifndef HIDIOCSFEATURE
++#define HIDIOCSFEATURE(len)    _IOC(_IOC_WRITE|_IOC_READ, 'H', 0x06, len)
++#endif
++
++#define BDADDR_STR_SIZE 18 /* strlen("00:00:00:00:00:00") + 1 */
++
++#define LED_1 (0x01 << 1)
++#define LED_2 (0x01 << 2)
++#define LED_3 (0x01 << 3)
++#define LED_4 (0x01 << 4)
++
++#define LED_STATUS_OFF 0
++#define LED_STATUS_ON  1
++
++/* Usb cable pairing section */
++static unsigned char *get_feature_report(int fd, uint8_t report_number,
++						unsigned int len)
++{
++	unsigned char *buf;
++	int ret;
++
++	buf = calloc(len, sizeof(*buf));
++	if (buf == NULL) {
++		error("%s:%s() calloc failed", __FILE__, __func__);
++		return NULL;
++	}
++
++	buf[0] = report_number;
++
++	ret = ioctl(fd, HIDIOCGFEATURE(len), buf);
++	if (ret < 0) {
++		error("%s:%s() HIDIOCGFEATURE ret = %d",
++			__FILE__, __func__, ret);
++		free(buf);
++		return NULL;
++	}
++
++	return buf;
++}
++
++static int set_feature_report(int fd, uint8_t *report, int len)
++{
++	int ret;
++
++	ret = ioctl(fd, HIDIOCSFEATURE(len), report);
++	if (ret < 0)
++		error("%s:%s() HIDIOCSFEATURE failed, ret = %d",
++			__FILE__, __func__, ret);
++
++	return ret;
++}
++
++char *sixaxis_get_device_bdaddr(int fd)
++{
++	unsigned char *buf;
++	char *address;
++
++	buf = get_feature_report(fd, 0xf2, 18);
++	if (buf == NULL) {
++		error("%s:%s() cannot get feature report", __FILE__, __func__);
++		return NULL;
++	}
++
++	address = calloc(BDADDR_STR_SIZE, sizeof(*address));
++	if (address == NULL) {
++		error("%s:%s() calloc failed", __FILE__, __func__);
++		free(buf);
++		return NULL;
++	}
++
++	snprintf(address, BDADDR_STR_SIZE,
++			"%02X:%02X:%02X:%02X:%02X:%02X",
++			buf[4], buf[5], buf[6], buf[7], buf[8], buf[9]);
++
++	free(buf);
++	return address;
++}
++
++char *sixaxis_get_master_bdaddr(int fd)
++{
++	unsigned char *buf;
++	char *address;
++
++	buf = get_feature_report(fd, 0xf5, 8);
++	if (buf == NULL) {
++		error("%s:%s() cannot get feature report", __FILE__, __func__);
++		return NULL;
++	}
++
++	address = calloc(BDADDR_STR_SIZE, sizeof(*address));
++	if (address == NULL) {
++		error("%s:%s() calloc failed", __FILE__, __func__);
++		free(buf);
++		return NULL;
++	}
++
++	snprintf(address, BDADDR_STR_SIZE,
++			"%02X:%02X:%02X:%02X:%02X:%02X",
++			buf[2], buf[3], buf[4], buf[5], buf[6], buf[7]);
++
++	free(buf);
++	return address;
++}
++
++int sixaxis_set_master_bdaddr(int fd, char *adapter_bdaddr)
++{
++	uint8_t *report;
++	uint8_t addr[6];
++	int ret;
++
++	ret = sscanf(adapter_bdaddr,
++			"%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx",
++			&addr[0], &addr[1], &addr[2],
++			&addr[3], &addr[4], &addr[5]);
++	if (ret != 6) {
++		error("%s:%s() Parsing the bt address failed",
++			__FILE__, __func__);
++		return -EINVAL;
++	}
++
++	report = malloc(8);
++	if (report == NULL) {
++		error("%s:%s() malloc failed", __FILE__, __func__);
++		return -ENOMEM;
++	}
++
++	report[0] = 0xf5;
++	report[1] = 0x01;
++
++	report[2] = addr[0];
++	report[3] = addr[1];
++	report[4] = addr[2];
++	report[5] = addr[3];
++	report[6] = addr[4];
++	report[7] = addr[5];
++
++	ret = set_feature_report(fd, report, 8);
++	if (ret < 0) {
++		error("%s:%s() cannot set feature report",
++			__FILE__, __func__);
++		goto out;
++	}
++
++	DBG("New Master Bluetooth address: %s", adapter_bdaddr);
++
++out:
++	free(report);
++	return ret;
++}
++
++
++/* Led setting section */
++static int set_leds(int fd, unsigned char leds_status[4])
++{
++	int ret;
++
++	/*
++	 * the total time the led is active (0xff means forever)
++	 * |     duty_length: how long a cycle is in deciseconds:
++	 * |     |                              (0 means "blink very fast")
++	 * |     |     ??? (Maybe a phase shift or duty_length multiplier?)
++	 * |     |     |     % of duty_length led is off (0xff means 100%)
++	 * |     |     |     |     % of duty_length led is on (0xff is 100%)
++	 * |     |     |     |     |
++	 * 0xff, 0x27, 0x10, 0x00, 0x32,
++	 */
++	unsigned char leds_report[] = {
++		0x01,
++		0x00, 0x00, 0x00, 0x00, 0x00, /* rumble values TBD */
++		0x00, 0x00, 0x00, 0x00, 0x1e, /* LED_1=0x02, LED_2=0x04 ... */
++		0xff, 0x27, 0x10, 0x00, 0x32, /* LED_4 */
++		0xff, 0x27, 0x10, 0x00, 0x32, /* LED_3 */
++		0xff, 0x27, 0x10, 0x00, 0x32, /* LED_2 */
++		0xff, 0x27, 0x10, 0x00, 0x32, /* LED_1 */
++		0x00, 0x00, 0x00, 0x00, 0x00,
++	};
++
++	int leds = 0;
++	if (leds_status[0])
++		leds |= LED_1;
++	if (leds_status[1])
++		leds |= LED_2;
++	if (leds_status[2])
++		leds |= LED_3;
++	if (leds_status[3])
++		leds |= LED_4;
++
++	leds_report[10] = leds;
++
++	ret = write(fd, leds_report, sizeof(leds_report));
++	if (ret < (ssize_t) sizeof(leds_report))
++		error("%s:%s() Unable to write to hidraw device",
++			__FILE__, __func__);
++
++	return ret;
++}
++
++int set_controller_number(int fd, unsigned int n)
++{
++	unsigned char leds_status[4] = {0, 0, 0, 0};
++
++	switch (n) {
++	case 0:
++		break;
++	case 1:
++	case 2:
++	case 3:
++	case 4:
++		leds_status[n - 1] = LED_STATUS_ON;
++		break;
++	case 5:
++	case 6:
++	case 7:
++		leds_status[4 - 1] = LED_STATUS_ON;
++		leds_status[n - 4 - 1] = LED_STATUS_ON;
++		break;
++	default:
++		error("%s:%s() Only 7 controllers supported for now",
++			__FILE__, __func__);
++		return -1;
++	}
++
++	return set_leds(fd, leds_status);
++}
+--- bluez-5.25/plugins/playstation-peripheral-hid.h.0001~	2014-11-30 13:53:12.404487656 +0100
++++ bluez-5.25/plugins/playstation-peripheral-hid.h	2014-11-30 13:53:12.404487656 +0100
+@@ -0,0 +1,10 @@
++#ifndef __PLAYSTATION_PERIPHERAL_HID_H
++#define __PLAYSTATION_PERIPHERAL_HID_H
++
++char *sixaxis_get_device_bdaddr(int fd);
++char *sixaxis_get_master_bdaddr(int fd);
++int sixaxis_set_master_bdaddr(int fd, char *adapter_bdaddr);
++
++int set_controller_number(int fd, unsigned int n);
++
++#endif /* __PLAYSTATION_PERIPHERAL_HID_H */
+--- bluez-5.25/src/adapter.c.0001~	2014-11-09 18:13:59.000000000 +0100
++++ bluez-5.25/src/adapter.c	2014-11-30 13:54:12.742301904 +0100
+@@ -255,6 +255,23 @@ struct btd_adapter *btd_adapter_get_defa
  	return NULL;
  }
  
@@ -752,10 +752,11 @@
  bool btd_adapter_is_default(struct btd_adapter *adapter)
  {
  	if (!adapter)
-@@ -6787,3 +6804,55 @@ void adapter_shutdown(void)
- 	if (!adapter_remaining)
- 		btd_exit();
+@@ -7463,3 +7480,56 @@ bool btd_le_connect_before_pairing(void)
+ 
+ 	return false;
  }
++
 +
 +int btd_create_stored_device(char *adapter_address,
 +			     char *device_address,
@@ -808,8 +809,8 @@
 +out:
 +	return ret;
 +}
---- bluez-5.18/src/adapter.h.playstation~	2014-03-25 21:53:42.000000000 +0100
-+++ bluez-5.18/src/adapter.h	2014-05-06 22:09:30.230172158 +0200
+--- bluez-5.25/src/adapter.h.0001~	2014-11-09 18:13:59.000000000 +0100
++++ bluez-5.25/src/adapter.h	2014-11-30 13:54:37.346103182 +0100
 @@ -39,6 +39,7 @@ struct btd_adapter;
  struct btd_device;
  
@@ -818,10 +819,10 @@
  bool btd_adapter_is_default(struct btd_adapter *adapter);
  uint16_t btd_adapter_get_index(struct btd_adapter *adapter);
  
-@@ -199,3 +200,14 @@ gboolean btd_adapter_check_oob_handler(s
- void btd_adapter_for_each_device(struct btd_adapter *adapter,
- 			void (*cb)(struct btd_device *device, void *data),
+@@ -227,3 +228,14 @@ void btd_adapter_for_each_device(struct
  			void *data);
+ 
+ bool btd_le_connect_before_pairing(void);
 +
 +int btd_create_stored_device(char *btd_adapter_address,
 +			     char *device_address,
