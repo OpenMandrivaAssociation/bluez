@@ -195,7 +195,7 @@ libtoolize -f -c
 autoreconf -fi
 
 %build
-%configure2_5x	\
+%configure	\
 	--enable-cups \
 	--enable-sixaxis \
 	--enable-udev \
