@@ -1,11 +1,11 @@
-%define major	3
-%define libname	%mklibname %{name} %{major}
-%define	devname	%mklibname -d %{name}
+%define major 3
+%define libname %mklibname %{name} %{major}
+%define devname %mklibname -d %{name}
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.27
-Release:	2
+Version:	5.29
+Release:	1
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
