@@ -25,7 +25,6 @@ Patch3:		0001-Allow-using-obexd-without-systemd-in-the-user-sessio.patch
 
 Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
 Patch5:		0002-autopair-Don-t-handle-the-iCade.patch
-Patch6:		bluez-5.27-formatstrings.patch
 Patch7:		0004-agent-Assert-possible-infinite-loop.patch
 
 BuildRequires:	flex
