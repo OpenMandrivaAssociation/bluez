@@ -195,7 +195,12 @@ libtoolize -f -c
 autoreconf -fi
 
 %build
-%configure	\
+# (tpg) build with clang
+# due to error ./src/adapter.h:49:12: error: unknown type name 'bdaddr_t'; did you mean 'daddr_t'?
+export CC=gcc
+export CXX=g++
+
+%configure \
 	--enable-cups \
 	--enable-sixaxis \
 	--enable-udev \
