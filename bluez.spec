@@ -215,7 +215,7 @@ autoreconf -fi
 	--enable-experimental \
 	--enable-playstation-peripheral
 
-%make V=1
+%make -j1 V=1
 
 %install
 %makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
