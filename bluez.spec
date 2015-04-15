@@ -195,10 +195,6 @@ libtoolize -f -c
 autoreconf -fi
 
 %build
-# (tpg) build with clang
-# due to error ./src/adapter.h:49:12: error: unknown type name 'bdaddr_t'; did you mean 'daddr_t'?
-export CC=gcc
-export CXX=g++
 
 %configure \
 	--enable-cups \
@@ -219,7 +215,7 @@ export CXX=g++
 	--enable-experimental \
 	--enable-playstation-peripheral
 
-%make
+%make V=1
 
 %install
 %makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
