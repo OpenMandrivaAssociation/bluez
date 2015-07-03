@@ -195,6 +195,8 @@ libtoolize -f -c
 autoreconf -fi
 
 %build
+export CC=gcc
+export CXX=g++
 
 %configure \
 	--enable-cups \
