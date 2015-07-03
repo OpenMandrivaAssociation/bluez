@@ -16,8 +16,6 @@ Source8:	hidd.conf
 Source9:	rfcomm.conf
 Source10:	bluez-uinput.modules
 
-## https://bugzilla.redhat.com/show_bug.cgi?id=874015#c0
-Patch1:		playstation-peripheral-pugin-v5.x.patch
 ## Ubuntu patches
 Patch2:		0001-work-around-Logitech-diNovo-Edge-keyboard-firmware-i.patch
 # Non-upstream
@@ -213,10 +211,9 @@ export CXX=g++
 	--with-systemduserunitdir=%{_userunitdir} \
 	--with-udevdir=/lib/udev \
 	--enable-datafiles \
-	--enable-experimental \
-	--enable-playstation-peripheral
+	--enable-experimental
 
-%make -j1 V=1
+%make
 
 %install
 %makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
