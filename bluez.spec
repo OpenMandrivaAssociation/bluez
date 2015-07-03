@@ -39,7 +39,6 @@ BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(libical)
 BuildRequires:	pkgconfig(udev) >= 186
-BuildRequires:	pkgconfig(libical)
 BuildRequires:	pkgconfig(systemd)
 
 Obsoletes:	obex-data-server < 0.4.7
@@ -257,3 +256,7 @@ install -m0644 profiles/proximity/proximity.conf %{buildroot}%{_sysconfdir}/blue
 install -d -m0755 %{buildroot}%{_localstatedir}/lib/bluetooth
 
 ln -s bluetooth.service %{buildroot}%{_unitdir}/dbus-org.bluez.service
+
+%post
+/bin/systemctl --user enable obex.service >/dev/null 2>&1 || :
+/bin/systemctl --user start obex.service >/dev/null 2>&1 || :
