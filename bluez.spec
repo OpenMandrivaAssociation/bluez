@@ -5,7 +5,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	5.31
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -40,9 +40,12 @@ BuildRequires:	pkgconfig(udev) >= 186
 BuildRequires:	pkgconfig(systemd)
 
 Obsoletes:	obex-data-server < 0.4.7
+Provides:	obex-data-server = 0.4.7
 Conflicts:	obex-data-server < 0.4.7
 Obsoletes:	bluez-alsa < 5.0
+Provides:	bluez-alsa = 5.0
 Obsoletes:	bluez-gstreamer < 5.0
+Provides:	bluez-gstreamer = 5.0
 
 %description
 These are the official Bluetooth communication libraries for Linux.
@@ -191,9 +194,6 @@ libtoolize -f -c
 autoreconf -fi
 
 %build
-export CC=gcc
-export CXX=g++
-
 %configure \
 	--enable-cups \
 	--enable-sixaxis \
