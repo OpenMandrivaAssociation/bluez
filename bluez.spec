@@ -59,6 +59,7 @@ These are the official Bluetooth communication libraries for Linux.
 %{_bindir}/hciattach
 %{_bindir}/hciconfig
 %{_bindir}/hcidump
+%{_bindir}/hex2hcd
 %{_bindir}/bluemoon
 %{_bindir}/mpris-proxy
 %{_libexecdir}/bluetooth/bluetoothd
@@ -86,7 +87,6 @@ These are the official Bluetooth communication libraries for Linux.
 %dir %{_libdir}/bluetooth
 %dir %{_libdir}/bluetooth/plugins
 %{_libdir}/bluetooth/plugins/sixaxis.so
-%{_libdir}/bluetooth/plugins/playstation-peripheral.so
 
 
 #--------------------------------------------------------------------
@@ -163,7 +163,6 @@ BLUETOOTH trademarks are owned by Bluetooth SIG, Inc., U.S.A.
 %{_bindir}/l2test
 %{_bindir}/rctest
 %{_bindir}/test-*
-%{_bindir}/mcaptest
 
 #--------------------------------------------------------------------
 %package -n    %{devname}
