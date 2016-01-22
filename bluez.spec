@@ -4,7 +4,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.34
+Version:	5.37
 Release:	1
 License:	GPLv2+
 Group:		Communications
@@ -65,21 +65,23 @@ These are the official Bluetooth communication libraries for Linux.
 %{_bindir}/hex2hcd
 %{_bindir}/bluemoon
 %{_bindir}/mpris-proxy
+%{_bindir}/btattach
 %{_libexecdir}/bluetooth/bluetoothd
 %{_libexecdir}/bluetooth/obexd
 %{_unitdir}/bluetooth.service
 %{_unitdir}/dbus-org.bluez.service
 %{_userunitdir}/obex.service
-%{_mandir}/man1/ciptool.1.*
-%{_mandir}/man1/hcitool.1.*
-%{_mandir}/man1/rfcomm.1.*
-%{_mandir}/man1/sdptool.1.*
-%{_mandir}/man1/bccmd.1.*
-%{_mandir}/man1/hciattach.1.*
-%{_mandir}/man1/hciconfig.1.*
-%{_mandir}/man1/hcidump.1.*
-%{_mandir}/man1/l2ping.1.*
-%{_mandir}/man1/rctest.1.*
+%{_mandir}/man1/ciptool.1*
+%{_mandir}/man1/hcitool.1*
+%{_mandir}/man1/rfcomm.1*
+%{_mandir}/man1/sdptool.1*
+%{_mandir}/man1/bccmd.1*
+%{_mandir}/man1/btattach.1*
+%{_mandir}/man1/hciattach.1*
+%{_mandir}/man1/hciconfig.1*
+%{_mandir}/man1/hcidump.1*
+%{_mandir}/man1/l2ping.1*
+%{_mandir}/man1/rctest.1*
 %{_mandir}/man8/*
 %config(noreplace) %{_sysconfdir}/sysconfig/*
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
