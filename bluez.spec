@@ -4,7 +4,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.38
+Version:	5.40
 Release:	1
 License:	GPLv2+
 Group:		Communications
@@ -71,6 +71,7 @@ These are the official Bluetooth communication libraries for Linux.
 %{_unitdir}/bluetooth.service
 %{_unitdir}/dbus-org.bluez.service
 %{_userunitdir}/obex.service
+%{_userunitdir}/default.target.wants/obex.service
 %{_mandir}/man1/ciptool.1*
 %{_mandir}/man1/hcitool.1*
 %{_mandir}/man1/rfcomm.1*
@@ -255,6 +256,6 @@ install -d -m0755 %{buildroot}%{_localstatedir}/lib/bluetooth
 
 ln -s bluetooth.service %{buildroot}%{_unitdir}/dbus-org.bluez.service
 
-%post
-/bin/systemctl --user enable obex.service >/dev/null 2>&1 || :
-/bin/systemctl --user start obex.service >/dev/null 2>&1 || :
+# (tpg) enable obex in userland
+mkdir -p %{buildroot}%{_userunitdir}/default.target.wants
+ln -sf %{_userunitdir}/obex.service %{buildroot}%{_userunitdir}/default.target.wants/obex.service
