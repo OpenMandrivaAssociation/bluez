@@ -4,7 +4,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.43
+Version:	5.44
 Release:	1
 License:	GPLv2+
 Group:		Communications
@@ -200,7 +200,9 @@ autoreconf -fi
 %configure \
 	--enable-cups \
 	--enable-sixaxis \
-	--enable-udev \
+	--enable-pie \
+	--enable-health \
+	--enable-nfc \
 	--enable-tools \
 	--enable-library \
 	--enable-usb \
