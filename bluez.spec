@@ -4,7 +4,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.43
+Version:	5.47
 Release:	1
 License:	GPLv2+
 Group:		Communications
@@ -16,6 +16,7 @@ Source8:	hidd.conf
 Source9:	rfcomm.conf
 Source10:	bluez-uinput.modules
 
+Patch1:		bluez-5.47-c++.patch
 ## Ubuntu patches
 Patch2:		0001-work-around-Logitech-diNovo-Edge-keyboard-firmware-i.patch
 # Non-upstream
@@ -200,7 +201,9 @@ autoreconf -fi
 %configure \
 	--enable-cups \
 	--enable-sixaxis \
-	--enable-udev \
+	--enable-pie \
+	--enable-health \
+	--enable-nfc \
 	--enable-tools \
 	--enable-library \
 	--enable-usb \
@@ -213,7 +216,11 @@ autoreconf -fi
 	--with-systemduserunitdir=%{_userunitdir} \
 	--with-udevdir=/lib/udev \
 	--enable-datafiles \
-	--enable-experimental
+	--enable-experimental \
+	--enable-deprecated
+
+# --enable-deprecated enables tools like hciattach -- still required by lots
+# of stuff...
 
 %make
 
@@ -250,7 +257,6 @@ install -p -m644 tools/hid2hci.rules -D %{buildroot}/lib/udev/rules.d/97-hid2hci
 install -m0644 profiles/network/network.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 src/main.conf %{buildroot}%{_sysconfdir}/bluetooth/
 install -m0644 profiles/input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
-install -m0644 profiles/proximity/proximity.conf %{buildroot}%{_sysconfdir}/bluetooth/
 
 install -d -m0755 %{buildroot}%{_localstatedir}/lib/bluetooth
 

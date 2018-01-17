@@ -1,0 +1,22 @@
+--- bluez-5.47/lib/bluetooth.h.omv~	2017-10-11 00:46:42.820281667 +0200
++++ bluez-5.47/lib/bluetooth.h	2017-10-11 00:49:30.000246915 +0200
+@@ -307,9 +307,19 @@ typedef struct {
+ #define BDADDR_LE_PUBLIC       0x01
+ #define BDADDR_LE_RANDOM       0x02
+ 
++#ifdef __cplusplus
++// Taking the address of a temporary isn't valid C++
++static constexpr bdaddr_t BDADDR_ANY_S   { 0, 0, 0, 0, 0, 0 };
++static constexpr bdaddr_t BDADDR_ALL_S   { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
++static constexpr bdaddr_t BDADDR_LOCAL_S { 0, 0, 0, 0xff, 0xff, 0xff };
++static constexpr bdaddr_t const * const BDADDR_ANY   = &BDADDR_ANY_S;
++static constexpr bdaddr_t const * const BDADDR_ALL   = &BDADDR_ALL_S;
++static constexpr bdaddr_t const * const BDADDR_LOCAL = &BDADDR_LOCAL_S;
++#else
+ #define BDADDR_ANY   (&(bdaddr_t) {{0, 0, 0, 0, 0, 0}})
+ #define BDADDR_ALL   (&(bdaddr_t) {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}})
+ #define BDADDR_LOCAL (&(bdaddr_t) {{0, 0, 0, 0xff, 0xff, 0xff}})
++#endif
+ 
+ /* Copy, swap, convert BD Address */
+ static inline int bacmp(const bdaddr_t *ba1, const bdaddr_t *ba2)
