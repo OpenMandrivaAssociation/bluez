@@ -38,6 +38,8 @@ BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(libical)
 BuildRequires:	pkgconfig(udev) >= 186
 BuildRequires:	pkgconfig(systemd)
+# For unitdir macros
+BuildRequires:	systemd
 
 Obsoletes:	obex-data-server < 0.4.7
 Provides:	obex-data-server = 0.4.7
