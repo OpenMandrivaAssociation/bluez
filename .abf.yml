@@ -1,4 +1,2 @@
-removed_sources:
-  bluez-5.47.tar.xz: 36f18c438ac6152d0f138d00bd4288394c6ecc49
 sources:
-  bluez-5.49.tar.xz: f8417a97b259c35d1e058836bb17bbc4d9605ec7
+  bluez-5.50.tar.xz: a59289c91ccb7fac248e916838d4e66d7936151e
