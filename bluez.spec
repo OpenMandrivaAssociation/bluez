@@ -4,8 +4,8 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.50
-Release:	2
+Version:	5.52
+Release:	1
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -39,7 +39,7 @@ BuildRequires:	pkgconfig(libical)
 BuildRequires:	pkgconfig(udev) >= 186
 BuildRequires:	pkgconfig(systemd)
 # For unitdir macros
-BuildRequires:	systemd
+BuildRequires:	systemd-macros
 
 Obsoletes:	obex-data-server < 0.4.7
 Provides:	obex-data-server = 0.4.7
@@ -192,8 +192,7 @@ applications which will use libraries from %{name}.
 #--------------------------------------------------------------------
 
 %prep
-%setup -q
-%apply_patches
+%autosetup -p1
 
 libtoolize -f -c
 autoreconf -fi
@@ -223,10 +222,10 @@ autoreconf -fi
 # --enable-deprecated enables tools like hciattach -- still required by lots
 # of stuff...
 
-%make
+%make_build
 
 %install
-%makeinstall_std rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
+%make_install rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
 
 mkdir -p %{buildroot}%{_sysconfdir}/bluetooth
 echo "1234" > %{buildroot}%{_sysconfdir}/bluetooth/pin
