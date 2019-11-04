@@ -33,6 +33,8 @@ BuildRequires:	bison
 BuildRequires:	pkgconfig(readline)
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	cups-devel
+BuildRequires:	pkgconfig(json-c)
+BuildRequires:	pkgconfig(ell) >= 0.26
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(glib-2.0)
 BuildRequires:	pkgconfig(libcap-ng)
@@ -56,8 +58,10 @@ Provides:	bluez-gstreamer = 5.0
 These are the official Bluetooth communication libraries for Linux.
 
 %files
+%{_bindir}/avinfo
 %{_bindir}/ciptool
 %{_bindir}/hcitool
+%{_bindir}/gatttool
 %{_bindir}/l2ping
 %{_bindir}/rfcomm
 %{_bindir}/sdptool
@@ -74,7 +78,6 @@ These are the official Bluetooth communication libraries for Linux.
 %{_libexecdir}/bluetooth/bluetoothd
 %{_libexecdir}/bluetooth/obexd
 %{_unitdir}/bluetooth.service
-%{_unitdir}/dbus-org.bluez.service
 %{_userunitdir}/obex.service
 %{_userunitdir}/dbus-org.bluez.obex.service
 %{_mandir}/man1/ciptool.1*
@@ -98,6 +101,7 @@ These are the official Bluetooth communication libraries for Linux.
 %dir %{_libdir}/bluetooth
 %dir %{_libdir}/bluetooth/plugins
 %{_libdir}/bluetooth/plugins/sixaxis.so
+%{_datadir}/zsh/site-functions/_bluetoothctl
 
 #--------------------------------------------------------------------
 
@@ -122,7 +126,8 @@ Group:		System/Libraries
 These are the official Bluetooth communication libraries for Linux.
 
 %files -n %{libname}
-/%{_lib}/libbluetooth.so.%{major}*
+%{_libdir}}/libbluetooth.so.%{major}*
+
 #--------------------------------------------------------------------
 
 %package hid2hci
@@ -211,6 +216,7 @@ autoreconf -fi
 	--enable-usb \
 	--enable-threads \
 	--enable-monitor \
+	--enable-mesh \
 	--enable-obex \
 	--enable-client \
 	--enable-systemd \
@@ -230,7 +236,7 @@ autoreconf -fi
 %make_install rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
 
 mkdir -p %{buildroot}%{_sysconfdir}/bluetooth
-echo "1234" > %{buildroot}%{_sysconfdir}/bluetooth/pin
+printf '%s\n' '1234' > %{buildroot}%{_sysconfdir}/bluetooth/pin
 
 chmod 600 %{buildroot}%{_sysconfdir}/bluetooth/pin
 
@@ -239,9 +245,14 @@ install -m644 %{SOURCE7} -D %{buildroot}%{_sysconfdir}/sysconfig/dund
 install -m644 %{SOURCE8} -D %{buildroot}%{_sysconfdir}/sysconfig/hidd
 install -m644 %{SOURCE9} -D %{buildroot}%{_sysconfdir}/sysconfig/rfcomm
 
-mkdir -p %{buildroot}/%{_lib}
-mv %{buildroot}%{_libdir}/libbluetooth.so.%{major}* %{buildroot}/%{_lib}
-ln -srf %{buildroot}/%{_lib}/libbluetooth.so.%{major}.*.* %{buildroot}%{_libdir}/libbluetooth.so
+# "make install" fails to install gatttool, necessary for Bluetooth Low Energy
+# Red Hat Bugzilla bug #1141909
+# Debian bug #720486
+install -m0755 attrib/gatttool %{buildroot}%{_bindir}
+
+# "make install" fails to install avinfo
+# Red Hat Bugzilla bug #1699680
+install -m0755 tools/avinfo %{buildroot}%{_bindir}
 
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
 %if "%{_lib}" == "lib64"
@@ -262,7 +273,8 @@ install -m0644 profiles/input/input.conf %{buildroot}%{_sysconfdir}/bluetooth/
 
 install -d -m0755 %{buildroot}%{_localstatedir}/lib/bluetooth
 
-ln -s bluetooth.service %{buildroot}%{_unitdir}/dbus-org.bluez.service
+# copy bluetooth config file and setup auto enable
+sed -i 's/#\[Policy\]$/\[Policy\]/; s/#AutoEnable=false/AutoEnable=true/' %{buildroot}%{_sysconfdir}/bluetooth/main.conf
 
 # (tpg) enable obex in userland
 ln -sf %{_userunitdir}/obex.service %{buildroot}%{_userunitdir}/dbus-org.bluez.obex.service
