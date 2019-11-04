@@ -126,7 +126,7 @@ Group:		System/Libraries
 These are the official Bluetooth communication libraries for Linux.
 
 %files -n %{libname}
-%{_libdir}}/libbluetooth.so.%{major}*
+%{_libdir}/libbluetooth.so.%{major}*
 
 #--------------------------------------------------------------------
 
