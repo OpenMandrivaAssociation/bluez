@@ -20,15 +20,18 @@ Patch1:		bluez-5.47-c++.patch
 ## Ubuntu patches
 Patch2:		0001-work-around-Logitech-diNovo-Edge-keyboard-firmware-i.patch
 # Non-upstream
-Patch3:		0001-Allow-using-obexd-without-systemd-in-the-user-sessio.patch
-
 Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
 Patch7:		0004-agent-Assert-possible-infinite-loop.patch
+# https://github.com/hadess/bluez/commits/systemd-hardening
+Patch10:	0001-build-Always-define-confdir-and-statedir.patch
+Patch11:	0002-systemd-Add-PrivateTmp-and-NoNewPrivileges-options.patch
+Patch12:	0003-systemd-Add-more-filesystem-lockdown.patch
+Patch13:	0004-systemd-More-lockdown.patch
 
 BuildRequires:	flex
 BuildRequires:	bison
-BuildRequires:	readline-devel
-BuildRequires:	expat-devel
+BuildRequires:	pkgconfig(readline)
+BuildRequires:	pkgconfig(expat)
 BuildRequires:	cups-devel
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(glib-2.0)
@@ -73,7 +76,7 @@ These are the official Bluetooth communication libraries for Linux.
 %{_unitdir}/bluetooth.service
 %{_unitdir}/dbus-org.bluez.service
 %{_userunitdir}/obex.service
-%{_userunitdir}/default.target.wants/obex.service
+%{_userunitdir}/dbus-org.bluez.obex.service
 %{_mandir}/man1/ciptool.1*
 %{_mandir}/man1/hcitool.1*
 %{_mandir}/man1/rfcomm.1*
@@ -96,38 +99,37 @@ These are the official Bluetooth communication libraries for Linux.
 %dir %{_libdir}/bluetooth/plugins
 %{_libdir}/bluetooth/plugins/sixaxis.so
 
-
 #--------------------------------------------------------------------
 
-%package	cups
+%package cups
 Summary:	CUPS printer backend for Bluetooth printers
 Group:		System/Servers
 Requires:	cups
 
-%description	cups
+%description cups
 This package contains the CUPS backend for Bluetooth printers.
 
-%files		cups
+%files cups
 %{_prefix}/lib/cups/backend/bluetooth
 
 #--------------------------------------------------------------------
 
-%package -n	%{libname}
+%package -n %{libname}
 Summary:	Official Linux Bluetooth protocol stack
 Group:		System/Libraries
 
-%description -n	%{libname}
+%description -n %{libname}
 These are the official Bluetooth communication libraries for Linux.
 
 %files -n %{libname}
 /%{_lib}/libbluetooth.so.%{major}*
 #--------------------------------------------------------------------
 
-%package	hid2hci
+%package hid2hci
 Summary:	Put HID proxying bluetooth HCI's into HCI mode
 Group:		Communications
 
-%description	hid2hci
+%description hid2hci
 Most allinone PC's and bluetooth keyboard / mouse sets which include a
 bluetooth dongle, ship with a so called HID proxying bluetooth HCI.
 The HID proxying makes the keyboard / mouse show up as regular USB HID
@@ -146,7 +148,7 @@ them again. Since you cannot use your bluetooth keyboard and mouse until
 they are paired, this will require the use of a regular (wired) USB keyboard
 and mouse.
 
-%files	hid2hci
+%files hid2hci
 /lib/udev/hid2hci
 %{_mandir}/man1/hid2hci.1*
 /lib/udev/rules.d/97-hid2hci.rules
@@ -156,34 +158,34 @@ and mouse.
 
 #--------------------------------------------------------------------
 
-%package	test
+%package test
 Summary:	Tools for testing of various Bluetooth-functions
 Group:		System/Servers
 Requires:	python-dbus
 Requires:	python-gobject
 
-%description	test
+%description test
 Contains a few tools for testing various bluetooth functions. The
 BLUETOOTH trademarks are owned by Bluetooth SIG, Inc., U.S.A.
 
-%files		test
+%files test
 %{_bindir}/simple-agent
 %{_bindir}/l2test
 %{_bindir}/rctest
 %{_bindir}/test-*
 
 #--------------------------------------------------------------------
-%package -n    %{devname}
-Summary:       Headers for developing programs that will use %{name}
-Group:         Development/C++
-Requires:      %{libname} = %{version}
-Provides:      %{name}-devel = %{version}-%{release}
+%package -n %{devname}
+Summary:	Headers for developing programs that will use %{name}
+Group:		Development/C++
+Requires:	%{libname} = %{version}
+Provides:	%{name}-devel = %{version}-%{release}
 
-%description -n        %{devname}
+%description -n %{devname}
 This package contains the headers that programmers will need to develop
 applications which will use libraries from %{name}.
 
-%files -n      %{devname}
+%files -n %{devname}
 %doc AUTHORS ChangeLog README
 %dir %{_includedir}/bluetooth
 %{_includedir}/bluetooth/*.h
@@ -263,5 +265,4 @@ install -d -m0755 %{buildroot}%{_localstatedir}/lib/bluetooth
 ln -s bluetooth.service %{buildroot}%{_unitdir}/dbus-org.bluez.service
 
 # (tpg) enable obex in userland
-mkdir -p %{buildroot}%{_userunitdir}/default.target.wants
-ln -sf %{_userunitdir}/obex.service %{buildroot}%{_userunitdir}/default.target.wants/obex.service
+ln -sf %{_userunitdir}/obex.service %{buildroot}%{_userunitdir}/dbus-org.bluez.obex.service
