@@ -75,6 +75,7 @@ These are the official Bluetooth communication libraries for Linux.
 %{_bindir}/bluemoon
 %{_bindir}/mpris-proxy
 %{_bindir}/meshctl
+%{_bindir}/mesh-cfgclient
 %{_bindir}/btattach
 %{_libexecdir}/bluetooth/bluetoothd
 %{_libexecdir}/bluetooth/obexd
