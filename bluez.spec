@@ -4,8 +4,8 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.52
-Release:	2
+Version:	5.54
+Release:	1
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -75,6 +75,7 @@ These are the official Bluetooth communication libraries for Linux.
 %{_bindir}/bluemoon
 %{_bindir}/mpris-proxy
 %{_bindir}/meshctl
+%{_bindir}/mesh-cfgclient
 %{_bindir}/btattach
 %{_libexecdir}/bluetooth/bluetoothd
 %{_libexecdir}/bluetooth/obexd
