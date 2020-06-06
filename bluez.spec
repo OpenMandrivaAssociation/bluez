@@ -1,11 +1,18 @@
+# Needed by pulseaudio, which is used by wine
+%ifarch %{x86_64}
+%bcond_without compat32
+%endif
+
 %define major 3
 %define libname %mklibname %{name} %{major}
 %define devname %mklibname -d %{name}
+%define lib32name %mklib32name %{name} %{major}
+%define dev32name %mklib32name -d %{name}
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	5.54
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -45,6 +52,16 @@ BuildRequires:	pkgconfig(udev) >= 186
 BuildRequires:	pkgconfig(systemd)
 # For unitdir macros
 BuildRequires:	systemd-macros
+%if %{with compat32}
+BuildRequires:	devel(libdbus-1)
+BuildRequires:	devel(libglib-2.0)
+BuildRequires:	devel(libpcre)
+BuildRequires:	devel(libical)
+BuildRequires:	devel(libudev)
+BuildRequires:	devel(libsystemd)
+BuildRequires:	devel(libreadline)
+BuildRequires:	devel(libjson-c)
+%endif
 
 Obsoletes:	obex-data-server < 0.4.7
 Provides:	obex-data-server = 0.4.7
@@ -211,13 +228,72 @@ applications which will use libraries from %{name}.
 %{_libdir}/pkgconfig/bluez.pc
 #--------------------------------------------------------------------
 
+%if %{with compat32}
+%package -n %{lib32name}
+Summary:	Official Linux Bluetooth protocol stack (32-bit)
+Group:		System/Libraries
+
+%description -n %{lib32name}
+These are the official Bluetooth communication libraries for Linux.
+
+%files -n %{lib32name}
+%{_prefix}/lib/libbluetooth.so.%{major}*
+%dir %{_prefix}/lib/bluetooth
+%dir %{_prefix}/lib/bluetooth/plugins
+%{_prefix}/lib/bluetooth/plugins/sixaxis.so
+
+#--------------------------------------------------------------------
+%package -n %{dev32name}
+Summary:	Headers for developing programs that will use %{name} (32-bit)
+Group:		Development/C++
+Requires:	%{devname} = %{version}
+Requires:	%{lib32name} = %{version}
+
+%description -n %{dev32name}
+This package contains the headers that programmers will need to develop
+applications which will use libraries from %{name}.
+
+%files -n %{dev32name}
+%{_prefix}/lib/*.so
+%{_prefix}/lib/pkgconfig/bluez.pc
+%endif
+
 %prep
 %autosetup -p1
 
 libtoolize -f -c
 autoreconf -fi
 
-%build
+export CONFIGURE_TOP="$(pwd)"
+
+%if %{with compat32}
+mkdir build32
+cd build32
+%configure32 \
+	--enable-sixaxis \
+	--enable-pie \
+	--enable-health \
+	--enable-nfc \
+	--enable-tools \
+	--enable-library \
+	--enable-usb \
+	--enable-threads \
+	--enable-monitor \
+	--enable-mesh \
+	--enable-obex \
+	--enable-client \
+	--enable-systemd \
+	--with-systemdsystemunitdir=%{_unitdir} \
+	--with-systemduserunitdir=%{_userunitdir} \
+	--with-udevdir=/lib/udev \
+	--enable-datafiles \
+	--enable-experimental \
+	--enable-deprecated
+cd ..
+%endif
+
+mkdir build
+cd build
 %configure \
 	--enable-cups \
 	--enable-sixaxis \
@@ -243,10 +319,17 @@ autoreconf -fi
 # --enable-deprecated enables tools like hciattach -- still required by lots
 # of stuff...
 
-%make_build
+%build
+%if %{with compat32}
+%make_build -C build32
+%endif
+%make_build -C build
 
 %install
-%make_install rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
+%if %{with compat32}
+%make_install -C build32 rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
+%endif
+%make_install -C build rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
 
 mkdir -p %{buildroot}%{_sysconfdir}/bluetooth
 printf '%s\n' '1234' > %{buildroot}%{_sysconfdir}/bluetooth/pin
@@ -261,14 +344,15 @@ install -m644 %{SOURCE9} -D %{buildroot}%{_sysconfdir}/sysconfig/rfcomm
 # "make install" fails to install gatttool, necessary for Bluetooth Low Energy
 # Red Hat Bugzilla bug #1141909
 # Debian bug #720486
-install -m0755 attrib/gatttool %{buildroot}%{_bindir}
+install -m0755 build/attrib/gatttool %{buildroot}%{_bindir}
 
 # "make install" fails to install avinfo
 # Red Hat Bugzilla bug #1699680
-install -m0755 tools/avinfo %{buildroot}%{_bindir}
+install -m0755 build/tools/avinfo %{buildroot}%{_bindir}
 
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
 %if "%{_lib}" == "lib64"
+rm -rf %{buildroot}%{_prefix}/lib/cups
 install -d %{buildroot}%{_prefix}/lib
 mv %{buildroot}%{_libdir}/cups %{buildroot}%{_prefix}/lib/cups
 %endif
