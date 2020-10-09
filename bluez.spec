@@ -361,6 +361,7 @@ mv %{buildroot}%{_libdir}/cups %{buildroot}%{_prefix}/lib/cups
 cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
 
+rm %{buildroot}%{_sysconfdir}/udev/rules.d/*.rules
 install -p -m644 tools/hid2hci.rules -D %{buildroot}/lib/udev/rules.d/97-hid2hci.rules
 
 #install more config files
