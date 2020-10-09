@@ -313,6 +313,7 @@ cd build
 	--with-systemduserunitdir=%{_userunitdir} \
 	--with-udevdir=/lib/udev \
 	--enable-datafiles \
+	--enable-hid2hci \
 	--enable-experimental \
 	--enable-deprecated
 
