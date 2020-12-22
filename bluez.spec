@@ -12,7 +12,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	5.55
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -34,6 +34,9 @@ Patch10:	0001-build-Always-define-confdir-and-statedir.patch
 Patch11:	0002-systemd-Add-PrivateTmp-and-NoNewPrivileges-options.patch
 Patch12:	0003-systemd-Add-more-filesystem-lockdown.patch
 Patch13:	0004-systemd-More-lockdown.patch
+
+# (tpg) upstream patches
+Patch500:	0000-main-Don-t-warn-for-unset-config-option.patch
 
 BuildRequires:	flex
 BuildRequires:	bison
