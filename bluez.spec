@@ -12,7 +12,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	5.55
-Release:	2
+Release:	3
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -130,9 +130,11 @@ These are the official Bluetooth communication libraries for Linux.
 %{_datadir}/zsh/site-functions/_bluetoothctl
 
 %post
+%system_post bluetooth.service
 %systemd_user_post obex.service
 
 %preun
+%systemd_preun bluetooth.service
 %systemd_user_preun obex.service
 
 
