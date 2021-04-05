@@ -1,0 +1,27 @@
+diff -up ell-0.39/ell/cert.c.omv~ ell-0.39/ell/cert.c
+--- ell-0.39/ell/cert.c.omv~	2021-04-05 02:48:04.656548106 +0200
++++ ell-0.39/ell/cert.c	2021-04-05 02:49:14.112975369 +0200
+@@ -435,6 +435,14 @@ static struct l_key *cert_try_link(struc
+ 	return NULL;
+ }
+ 
++#define L_AUTO_CLEANUP_VAR(vartype,varname,destroy) \
++	vartype varname __attribute__((cleanup(destroy)))
++
++static void cert_keyring_cleanup(struct l_keyring **p)
++{
++	l_keyring_free(*p);
++}
++
+ #define RETURN_ERROR(msg, args...)	\
+ 	do {	\
+ 		if (error) {	\
+@@ -449,7 +457,7 @@ LIB_EXPORT bool l_certchain_verify(struc
+ 					const char **error)
+ {
+ 	struct l_keyring *ca_ring = NULL;
+-	_auto_(l_keyring_free) struct l_keyring *verify_ring = NULL;
++	L_AUTO_CLEANUP_VAR(struct l_keyring *, verify_ring, cert_keyring_cleanup) = NULL;
+ 	struct l_cert *cert;
+ 	struct l_key *prev_key = NULL;
+ 	int verified = 0;

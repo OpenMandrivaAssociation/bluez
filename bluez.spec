@@ -11,8 +11,8 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.55
-Release:	5
+Version:	5.58
+Release:	1
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -27,6 +27,7 @@ Patch1:		bluez-5.47-c++.patch
 ## Ubuntu patches
 Patch2:		0001-work-around-Logitech-diNovo-Edge-keyboard-firmware-i.patch
 # Non-upstream
+Patch3:		ell-0.39-fix-build-with-clang.patch
 Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
 Patch7:		0004-agent-Assert-possible-infinite-loop.patch
 # https://github.com/hadess/bluez/commits/systemd-hardening
@@ -35,16 +36,13 @@ Patch11:	0002-systemd-Add-PrivateTmp-and-NoNewPrivileges-options.patch
 Patch12:	0003-systemd-Add-more-filesystem-lockdown.patch
 Patch13:	0004-systemd-More-lockdown.patch
 
-# (tpg) upstream patches
-Patch500:	0000-main-Don-t-warn-for-unset-config-option.patch
-
 BuildRequires:	flex
 BuildRequires:	bison
 BuildRequires:	pkgconfig(readline)
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	cups-devel
 BuildRequires:	pkgconfig(json-c)
-BuildRequires:	pkgconfig(ell) >= 0.26
+BuildRequires:	pkgconfig(ell) >= 0.39
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(glib-2.0)
 BuildRequires:	pkgconfig(libcap-ng)
@@ -85,7 +83,6 @@ These are the official Bluetooth communication libraries for Linux.
 %{_bindir}/l2ping
 %{_bindir}/rfcomm
 %{_bindir}/sdptool
-%{_bindir}/bccmd
 %{_bindir}/bluetoothctl
 %{_bindir}/btmon
 %{_bindir}/hciattach
@@ -109,7 +106,6 @@ These are the official Bluetooth communication libraries for Linux.
 %{_mandir}/man1/hcitool.1*
 %{_mandir}/man1/rfcomm.1*
 %{_mandir}/man1/sdptool.1*
-%{_mandir}/man1/bccmd.1*
 %{_mandir}/man1/btattach.1*
 %{_mandir}/man1/hciattach.1*
 %{_mandir}/man1/hciconfig.1*
