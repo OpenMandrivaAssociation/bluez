@@ -269,13 +269,10 @@ autoreconf -fi
 
 export CONFIGURE_TOP="$(pwd)"
 
-# FIXME --disable-external-ell is a workaround for broken Makefiles
-
 %if %{with compat32}
 mkdir build32
 cd build32
 %configure32 \
-	--disable-external-ell \
 	--enable-sixaxis \
 	--enable-pie \
 	--enable-health \
@@ -301,7 +298,7 @@ cd ..
 mkdir build
 cd build
 %configure \
-	--disable-external-ell \
+	--enable-external-ell \
 	--enable-cups \
 	--enable-sixaxis \
 	--enable-pie \
@@ -327,8 +324,15 @@ cd build
 # --enable-deprecated enables tools like hciattach -- still required by lots
 # of stuff...
 
+# FIXME workaround for Makefiles being broken with external ell
+mkdir ell
+touch ell/shared
+
 %build
 %if %{with compat32}
+# FIXME workaround for Makefiles being broken with external ell
+mkdir build32/ell
+touch build32/ell/shared
 %make_build -C build32
 %endif
 %make_build -C build
