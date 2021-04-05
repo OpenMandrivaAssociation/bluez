@@ -269,10 +269,13 @@ autoreconf -fi
 
 export CONFIGURE_TOP="$(pwd)"
 
+# FIXME --disable-external-ell is a workaround for broken Makefiles
+
 %if %{with compat32}
 mkdir build32
 cd build32
 %configure32 \
+	--disable-external-ell \
 	--enable-sixaxis \
 	--enable-pie \
 	--enable-health \
@@ -298,6 +301,7 @@ cd ..
 mkdir build
 cd build
 %configure \
+	--disable-external-ell \
 	--enable-cups \
 	--enable-sixaxis \
 	--enable-pie \
