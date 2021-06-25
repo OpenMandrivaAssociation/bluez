@@ -11,7 +11,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.58
+Version:	5.59
 Release:	1
 License:	GPLv2+
 Group:		Communications
@@ -28,21 +28,25 @@ Patch1:		bluez-5.47-c++.patch
 Patch2:		0001-work-around-Logitech-diNovo-Edge-keyboard-firmware-i.patch
 # Non-upstream
 Patch3:		ell-0.39-fix-build-with-clang.patch
+# https://github.com/hadess/bluez/commits/obex-5.46
 Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
-Patch7:		0004-agent-Assert-possible-infinite-loop.patch
 # https://github.com/hadess/bluez/commits/systemd-hardening
 Patch10:	0001-build-Always-define-confdir-and-statedir.patch
 Patch11:	0002-systemd-Add-PrivateTmp-and-NoNewPrivileges-options.patch
 Patch12:	0003-systemd-Add-more-filesystem-lockdown.patch
 Patch13:	0004-systemd-More-lockdown.patch
+Patch14:	0005-media-rename-local-function-conflicting-with-pause-2.patch
+# Fix rfkill reading from newer kernels
+Patch15:	0001-rfkill-Fix-reading-from-rfkill-socket.patch
+# Fix FTBFS with newer glib versions
+Patch16:	0002-Use-g_memdup2-everywhere.patch
 
-BuildRequires:	flex
-BuildRequires:	bison
+BuildRequires:	python3dist(docutils)
 BuildRequires:	pkgconfig(readline)
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	cups-devel
 BuildRequires:	pkgconfig(json-c)
-BuildRequires:	pkgconfig(ell) >= 0.39
+BuildRequires:	pkgconfig(ell) >= 0.40
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(glib-2.0)
 BuildRequires:	pkgconfig(libcap-ng)
@@ -52,7 +56,7 @@ BuildRequires:	pkgconfig(libical)
 BuildRequires:	pkgconfig(udev) >= 186
 BuildRequires:	pkgconfig(systemd)
 # For unitdir macros
-BuildRequires:	systemd-macros
+BuildRequires:	systemd-rpm-macros
 %if %{with compat32}
 BuildRequires:	devel(libdbus-1)
 BuildRequires:	devel(libglib-2.0)
@@ -71,6 +75,7 @@ Obsoletes:	bluez-alsa < 5.0
 Provides:	bluez-alsa = 5.0
 Obsoletes:	bluez-gstreamer < 5.0
 Provides:	bluez-gstreamer = 5.0
+%systemd_requires
 
 %description
 These are the official Bluetooth communication libraries for Linux.
@@ -93,6 +98,7 @@ These are the official Bluetooth communication libraries for Linux.
 %{_bindir}/mpris-proxy
 %{_bindir}/meshctl
 %{_bindir}/mesh-cfgclient
+%{_bindir}/mesh-cfgtest
 %{_bindir}/btattach
 %{_libexecdir}/bluetooth/bluetoothd
 %{_libexecdir}/bluetooth/obexd
@@ -102,6 +108,7 @@ These are the official Bluetooth communication libraries for Linux.
 %{_unitdir}/bluetooth-mesh.service
 %{_userunitdir}/obex.service
 %{_userunitdir}/dbus-org.bluez.obex.service
+%{_mandir}/man1/btmon.1*
 %{_mandir}/man1/ciptool.1*
 %{_mandir}/man1/hcitool.1*
 %{_mandir}/man1/rfcomm.1*
@@ -189,7 +196,7 @@ and mouse.
 %files hid2hci
 /lib/udev/hid2hci
 %{_mandir}/man1/hid2hci.1*
-/lib/udev/rules.d/97-hid2hci.rules
+%{_udevrulesdir}/97-hid2hci.rules
 
 %post hid2hci
 %{_bindir}/udevadm trigger --subsystem-match=usb
@@ -288,7 +295,7 @@ cd build32
 	--enable-systemd \
 	--with-systemdsystemunitdir=%{_unitdir} \
 	--with-systemduserunitdir=%{_userunitdir} \
-	--with-udevdir=/lib/udev \
+	--with-udevdir=$(dirname %{_udevrulesdir}) \
 	--enable-datafiles \
 	--enable-experimental \
 	--enable-deprecated
@@ -315,7 +322,7 @@ cd build
 	--enable-systemd \
 	--with-systemdsystemunitdir=%{_unitdir} \
 	--with-systemduserunitdir=%{_userunitdir} \
-	--with-udevdir=/lib/udev \
+	--with-udevdir=$(dirname %{_udevrulesdir}) \
 	--enable-datafiles \
 	--enable-hid2hci \
 	--enable-experimental \
@@ -339,9 +346,9 @@ touch build32/ell/shared
 
 %install
 %if %{with compat32}
-%make_install -C build32 rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
+%make_install -C build32
 %endif
-%make_install -C build rulesdir=%{_sysconfdir}/udev/rules.d udevdir=/lib/udev
+%make_install -C build
 
 mkdir -p %{buildroot}%{_sysconfdir}/bluetooth
 printf '%s\n' '1234' > %{buildroot}%{_sysconfdir}/bluetooth/pin
@@ -372,8 +379,7 @@ mv %{buildroot}%{_libdir}/cups %{buildroot}%{_prefix}/lib/cups
 cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
 
-rm %{buildroot}%{_sysconfdir}/udev/rules.d/*.rules
-install -p -m644 tools/hid2hci.rules -D %{buildroot}/lib/udev/rules.d/97-hid2hci.rules
+install -p -m644 tools/hid2hci.rules -D %{buildroot}%{_udevrulesdir}/97-hid2hci.rules
 
 #install more config files
 install -m0644 profiles/network/network.conf %{buildroot}%{_sysconfdir}/bluetooth/
