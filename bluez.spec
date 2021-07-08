@@ -11,7 +11,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.59
+Version:	5.60
 Release:	1
 License:	GPLv2+
 Group:		Communications
@@ -36,8 +36,6 @@ Patch11:	0002-systemd-Add-PrivateTmp-and-NoNewPrivileges-options.patch
 Patch12:	0003-systemd-Add-more-filesystem-lockdown.patch
 Patch13:	0004-systemd-More-lockdown.patch
 Patch14:	0005-media-rename-local-function-conflicting-with-pause-2.patch
-# Fix rfkill reading from newer kernels
-Patch15:	0001-rfkill-Fix-reading-from-rfkill-socket.patch
 # Fix FTBFS with newer glib versions
 Patch16:	0002-Use-g_memdup2-everywhere.patch
 
