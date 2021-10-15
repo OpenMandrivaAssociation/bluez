@@ -11,7 +11,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.60
+Version:	5.62
 Release:	1
 License:	GPLv2+
 Group:		Communications
@@ -35,9 +35,8 @@ Patch10:	0001-build-Always-define-confdir-and-statedir.patch
 Patch11:	0002-systemd-Add-PrivateTmp-and-NoNewPrivileges-options.patch
 Patch12:	0003-systemd-Add-more-filesystem-lockdown.patch
 Patch13:	0004-systemd-More-lockdown.patch
-Patch14:	0005-media-rename-local-function-conflicting-with-pause-2.patch
 # Fix FTBFS with newer glib versions
-Patch16:	0002-Use-g_memdup2-everywhere.patch
+Patch14:	0002-Use-g_memdup2-everywhere.patch
 
 BuildRequires:	python3dist(docutils)
 BuildRequires:	pkgconfig(readline)
@@ -106,18 +105,18 @@ These are the official Bluetooth communication libraries for Linux.
 %{_unitdir}/bluetooth-mesh.service
 %{_userunitdir}/obex.service
 %{_userunitdir}/dbus-org.bluez.obex.service
-%{_mandir}/man1/btmon.1*
-%{_mandir}/man1/ciptool.1*
-%{_mandir}/man1/hcitool.1*
-%{_mandir}/man1/rfcomm.1*
-%{_mandir}/man1/sdptool.1*
-%{_mandir}/man1/btattach.1*
-%{_mandir}/man1/hciattach.1*
-%{_mandir}/man1/hciconfig.1*
-%{_mandir}/man1/hcidump.1*
-%{_mandir}/man1/l2ping.1*
-%{_mandir}/man1/rctest.1*
-%{_mandir}/man8/*
+%doc %{_mandir}/man1/btmon.1*
+%doc %{_mandir}/man1/ciptool.1*
+%doc %{_mandir}/man1/hcitool.1*
+%doc %{_mandir}/man1/rfcomm.1*
+%doc %{_mandir}/man1/sdptool.1*
+%doc %{_mandir}/man1/btattach.1*
+%doc %{_mandir}/man1/hciattach.1*
+%doc %{_mandir}/man1/hciconfig.1*
+%doc %{_mandir}/man1/hcidump.1*
+%doc %{_mandir}/man1/l2ping.1*
+%doc %{_mandir}/man1/rctest.1*
+%doc %{_mandir}/man8/*
 %config(noreplace) %{_sysconfdir}/sysconfig/*
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
 %config(noreplace) %{_sysconfdir}/bluetooth
@@ -193,7 +192,7 @@ and mouse.
 
 %files hid2hci
 /lib/udev/hid2hci
-%{_mandir}/man1/hid2hci.1*
+%doc %{_mandir}/man1/hid2hci.1*
 %{_udevrulesdir}/97-hid2hci.rules
 
 %post hid2hci
