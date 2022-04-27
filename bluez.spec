@@ -11,7 +11,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.63
+Version:	5.64
 Release:	1
 License:	GPLv2+
 Group:		Communications
@@ -30,13 +30,6 @@ Patch2:		0001-work-around-Logitech-diNovo-Edge-keyboard-firmware-i.patch
 Patch3:		ell-0.39-fix-build-with-clang.patch
 # https://github.com/hadess/bluez/commits/obex-5.46
 Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
-# https://github.com/hadess/bluez/commits/systemd-hardening
-Patch10:	0001-build-Always-define-confdir-and-statedir.patch
-Patch11:	0002-systemd-Add-PrivateTmp-and-NoNewPrivileges-options.patch
-Patch12:	0003-systemd-Add-more-filesystem-lockdown.patch
-Patch13:	0004-systemd-More-lockdown.patch
-# Fix FTBFS with newer glib versions
-Patch14:	0002-Use-g_memdup2-everywhere.patch
 
 BuildRequires:	python3dist(docutils)
 BuildRequires:	pkgconfig(readline)
