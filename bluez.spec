@@ -184,7 +184,7 @@ they are paired, this will require the use of a regular (wired) USB keyboard
 and mouse.
 
 %files hid2hci
-/lib/udev/hid2hci
+%{_prefix}/lib/udev/hid2hci
 %doc %{_mandir}/man1/hid2hci.1*
 %{_udevrulesdir}/97-hid2hci.rules
 
