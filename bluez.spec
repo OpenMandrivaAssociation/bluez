@@ -85,6 +85,7 @@ These are the official Bluetooth communication libraries for Linux.
 %{_bindir}/hcidump
 %{_bindir}/hex2hcd
 %{_bindir}/bluemoon
+%{_bindir}/isotest
 %{_bindir}/mpris-proxy
 %{_bindir}/meshctl
 %{_bindir}/mesh-cfgclient
@@ -107,6 +108,7 @@ These are the official Bluetooth communication libraries for Linux.
 %doc %{_mandir}/man1/hciattach.1*
 %doc %{_mandir}/man1/hciconfig.1*
 %doc %{_mandir}/man1/hcidump.1*
+%doc %{_mandir}/man1/isotest.1.*
 %doc %{_mandir}/man1/l2ping.1*
 %doc %{_mandir}/man1/rctest.1*
 %doc %{_mandir}/man8/*
