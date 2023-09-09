@@ -28,8 +28,9 @@ Patch1:		bluez-5.47-c++.patch
 Patch2:		0001-work-around-Logitech-diNovo-Edge-keyboard-firmware-i.patch
 # Non-upstream
 Patch3:		ell-0.39-fix-build-with-clang.patch
+# Upstream's logic has changed so needs a rebase
 # https://github.com/hadess/bluez/commits/obex-5.46
-Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
+#Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
 
 BuildRequires:	python3dist(docutils)
 BuildRequires:	pkgconfig(readline)
