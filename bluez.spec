@@ -114,7 +114,7 @@ These are the official Bluetooth communication libraries for Linux.
 %doc %{_mandir}/man1/rctest.1*
 %doc %{_mandir}/man8/*
 %config(noreplace) %{_sysconfdir}/sysconfig/*
-%config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
+#config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
 %config(noreplace) %{_sysconfdir}/bluetooth
 %{_datadir}/dbus-1/system-services/org.bluez.service
 %{_datadir}/dbus-1/system-services/org.bluez.mesh.service
