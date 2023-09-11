@@ -11,8 +11,8 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.66
-Release:	2
+Version:	5.69
+Release:	1
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.bluez.org/
@@ -28,8 +28,9 @@ Patch1:		bluez-5.47-c++.patch
 Patch2:		0001-work-around-Logitech-diNovo-Edge-keyboard-firmware-i.patch
 # Non-upstream
 Patch3:		ell-0.39-fix-build-with-clang.patch
+# Upstream's logic has changed so needs a rebase
 # https://github.com/hadess/bluez/commits/obex-5.46
-Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
+#Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
 
 BuildRequires:	python3dist(docutils)
 BuildRequires:	pkgconfig(readline)
@@ -99,6 +100,9 @@ These are the official Bluetooth communication libraries for Linux.
 %{_unitdir}/bluetooth-mesh.service
 %{_userunitdir}/obex.service
 %{_userunitdir}/dbus-org.bluez.obex.service
+%doc %{_mandir}/man1/bluetoothctl-mgmt.1.*
+%doc %{_mandir}/man1/bluetoothctl-monitor.1.*
+%doc %{_mandir}/man1/btmgmt.1.*
 %doc %{_mandir}/man1/btmon.1*
 %doc %{_mandir}/man1/ciptool.1*
 %doc %{_mandir}/man1/hcitool.1*
@@ -113,8 +117,10 @@ These are the official Bluetooth communication libraries for Linux.
 %doc %{_mandir}/man1/rctest.1*
 %doc %{_mandir}/man8/*
 %config(noreplace) %{_sysconfdir}/sysconfig/*
-%config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
+#config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
 %config(noreplace) %{_sysconfdir}/bluetooth
+%config(noreplace) %{_datadir}/dbus-1/system.d/bluetooth-mesh.conf
+%config(noreplace) %{_datadir}/dbus-1/system.d/bluetooth.conf
 %{_datadir}/dbus-1/system-services/org.bluez.service
 %{_datadir}/dbus-1/system-services/org.bluez.mesh.service
 %{_datadir}/dbus-1/services/org.bluez.obex.service
