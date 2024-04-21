@@ -248,9 +248,9 @@ These are the official Bluetooth communication libraries for Linux.
 
 %files -n %{lib32name}
 %{_prefix}/lib/libbluetooth.so.%{major}*
-%dir %{_prefix}/lib/bluetooth
-%dir %{_prefix}/lib/bluetooth/plugins
-%{_prefix}/lib/bluetooth/plugins/sixaxis.so
+#dir %{_prefix}/lib/bluetooth
+#dir %{_prefix}/lib/bluetooth/plugins
+#{_prefix}/lib/bluetooth/plugins/sixaxis.so
 
 #--------------------------------------------------------------------
 %package -n %{dev32name}
