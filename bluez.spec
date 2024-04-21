@@ -154,7 +154,7 @@ Requires:	cups
 This package contains the CUPS backend for Bluetooth printers.
 
 %files cups
-%{_prefix}/lib/cups/backend/bluetooth
+#{_prefix}/lib/cups/backend/bluetooth
 
 #--------------------------------------------------------------------
 
