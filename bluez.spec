@@ -373,7 +373,7 @@ install -m0755 build/tools/avinfo %{buildroot}%{_bindir}
 %if "%{_lib}" == "lib64"
 rm -rf %{buildroot}%{_prefix}/lib/cups
 install -d %{buildroot}%{_prefix}/lib
-mv %{buildroot}%{_libdir}/cups %{buildroot}%{_prefix}/lib/cups
+#mv %{buildroot}%{_libdir}/cups %{buildroot}%{_prefix}/lib/cups
 %endif
 
 cp test/test-* %{buildroot}%{_bindir}
