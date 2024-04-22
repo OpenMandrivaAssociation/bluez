@@ -370,11 +370,16 @@ install -m0755 build/attrib/gatttool %{buildroot}%{_bindir}
 install -m0755 build/tools/avinfo %{buildroot}%{_bindir}
 
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
-%if "%{_lib}" == "lib64"
-rm -rf %{buildroot}%{_prefix}/lib/cups
-install -d %{buildroot}%{_prefix}/lib
+#if "%{_lib}" == "lib64"
+#rm -rf %{buildroot}%{_prefix}/lib/cups
+#install -d %{buildroot}%{_prefix}/lib
 #mv %{buildroot}%{_libdir}/cups %{buildroot}%{_prefix}/lib/cups
-%endif
+#endif
+	
+if test -d %{buildroot}/usr/lib64/cups ; then
+	install -D -m0755 %{buildroot}/usr/lib64/cups/backend/bluetooth %{buildroot}%_cups_serverbin/backend/bluetooth
+	rm -rf %{buildroot}%{_libdir}/cups
+fi
 
 cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
