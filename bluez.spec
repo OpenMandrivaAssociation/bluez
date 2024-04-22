@@ -119,7 +119,6 @@ These are the official Bluetooth communication libraries for Linux.
 %doc %{_mandir}/man5/org.bluez.*
 %doc %{_mandir}/man8/*
 %config(noreplace) %{_sysconfdir}/sysconfig/*
-#config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
 %config(noreplace) %{_sysconfdir}/bluetooth
 %config(noreplace) %{_datadir}/dbus-1/system.d/bluetooth-mesh.conf
 %config(noreplace) %{_datadir}/dbus-1/system.d/bluetooth.conf
@@ -127,9 +126,6 @@ These are the official Bluetooth communication libraries for Linux.
 %{_datadir}/dbus-1/system-services/org.bluez.mesh.service
 %{_datadir}/dbus-1/services/org.bluez.obex.service
 %{_localstatedir}/lib/bluetooth
-#dir %{_libdir}/bluetooth
-#dir %{_libdir}/bluetooth/plugins
-#{_libdir}/bluetooth/plugins/sixaxis.so
 %{_datadir}/zsh/site-functions/_bluetoothctl
 
 %post
@@ -248,9 +244,6 @@ These are the official Bluetooth communication libraries for Linux.
 
 %files -n %{lib32name}
 %{_prefix}/lib/libbluetooth.so.%{major}*
-#dir %{_prefix}/lib/bluetooth
-#dir %{_prefix}/lib/bluetooth/plugins
-#{_prefix}/lib/bluetooth/plugins/sixaxis.so
 
 #--------------------------------------------------------------------
 %package -n %{dev32name}
