@@ -104,6 +104,7 @@ These are the official Bluetooth communication libraries for Linux.
 %{_userunitdir}/dbus-org.bluez.obex.service
 %doc %{_mandir}/man1/bluetoothctl-mgmt.1.*
 %doc %{_mandir}/man1/bluetoothctl-monitor.1.*
+%doc %{_mandir}/man1/bluetoothctl*
 %doc %{_mandir}/man1/btmgmt.1.*
 %doc %{_mandir}/man1/btmon.1*
 %doc %{_mandir}/man1/ciptool.1*
@@ -117,6 +118,7 @@ These are the official Bluetooth communication libraries for Linux.
 %doc %{_mandir}/man1/isotest.1.*
 %doc %{_mandir}/man1/l2ping.1*
 %doc %{_mandir}/man1/rctest.1*
+%doc %{_mandir}/man5/org.bluez.*
 %doc %{_mandir}/man8/*
 %config(noreplace) %{_sysconfdir}/sysconfig/*
 #config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
@@ -154,7 +156,7 @@ Requires:	cups
 This package contains the CUPS backend for Bluetooth printers.
 
 %files cups
-#{_prefix}/lib/cups/backend/bluetooth
+%{_prefix}/lib/cups/backend/bluetooth
 
 #--------------------------------------------------------------------
 
