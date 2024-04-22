@@ -102,8 +102,7 @@ These are the official Bluetooth communication libraries for Linux.
 %{_unitdir}/bluetooth-mesh.service
 %{_userunitdir}/obex.service
 %{_userunitdir}/dbus-org.bluez.obex.service
-%doc %{_mandir}/man1/bluetoothctl-mgmt.1.*
-%doc %{_mandir}/man1/bluetoothctl-monitor.1.*
+%doc %{_mandir}/man1/bluetoothctl*
 %doc %{_mandir}/man1/btmgmt.1.*
 %doc %{_mandir}/man1/btmon.1*
 %doc %{_mandir}/man1/ciptool.1*
@@ -117,9 +116,9 @@ These are the official Bluetooth communication libraries for Linux.
 %doc %{_mandir}/man1/isotest.1.*
 %doc %{_mandir}/man1/l2ping.1*
 %doc %{_mandir}/man1/rctest.1*
+%doc %{_mandir}/man5/org.bluez.*
 %doc %{_mandir}/man8/*
 %config(noreplace) %{_sysconfdir}/sysconfig/*
-#config(noreplace) %{_sysconfdir}/dbus-1/system.d/*.conf
 %config(noreplace) %{_sysconfdir}/bluetooth
 %config(noreplace) %{_datadir}/dbus-1/system.d/bluetooth-mesh.conf
 %config(noreplace) %{_datadir}/dbus-1/system.d/bluetooth.conf
@@ -127,9 +126,6 @@ These are the official Bluetooth communication libraries for Linux.
 %{_datadir}/dbus-1/system-services/org.bluez.mesh.service
 %{_datadir}/dbus-1/services/org.bluez.obex.service
 %{_localstatedir}/lib/bluetooth
-%dir %{_libdir}/bluetooth
-%dir %{_libdir}/bluetooth/plugins
-%{_libdir}/bluetooth/plugins/sixaxis.so
 %{_datadir}/zsh/site-functions/_bluetoothctl
 
 %post
@@ -248,9 +244,6 @@ These are the official Bluetooth communication libraries for Linux.
 
 %files -n %{lib32name}
 %{_prefix}/lib/libbluetooth.so.%{major}*
-%dir %{_prefix}/lib/bluetooth
-%dir %{_prefix}/lib/bluetooth/plugins
-%{_prefix}/lib/bluetooth/plugins/sixaxis.so
 
 #--------------------------------------------------------------------
 %package -n %{dev32name}
@@ -370,11 +363,16 @@ install -m0755 build/attrib/gatttool %{buildroot}%{_bindir}
 install -m0755 build/tools/avinfo %{buildroot}%{_bindir}
 
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
-%if "%{_lib}" == "lib64"
-rm -rf %{buildroot}%{_prefix}/lib/cups
-install -d %{buildroot}%{_prefix}/lib
-mv %{buildroot}%{_libdir}/cups %{buildroot}%{_prefix}/lib/cups
-%endif
+#if "%{_lib}" == "lib64"
+#rm -rf %{buildroot}%{_prefix}/lib/cups
+#install -d %{buildroot}%{_prefix}/lib
+#mv %{buildroot}%{_libdir}/cups %{buildroot}%{_prefix}/lib/cups
+#endif
+	
+if test -d %{buildroot}/usr/lib64/cups ; then
+	install -D -m0755 %{buildroot}/usr/lib64/cups/backend/bluetooth %{buildroot}%_cups_serverbin/backend/bluetooth
+	rm -rf %{buildroot}%{_libdir}/cups
+fi
 
 cp test/test-* %{buildroot}%{_bindir}
 cp test/simple-agent %{buildroot}%{_bindir}/simple-agent
