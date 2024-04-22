@@ -102,8 +102,6 @@ These are the official Bluetooth communication libraries for Linux.
 %{_unitdir}/bluetooth-mesh.service
 %{_userunitdir}/obex.service
 %{_userunitdir}/dbus-org.bluez.obex.service
-%doc %{_mandir}/man1/bluetoothctl-mgmt.1.*
-%doc %{_mandir}/man1/bluetoothctl-monitor.1.*
 %doc %{_mandir}/man1/bluetoothctl*
 %doc %{_mandir}/man1/btmgmt.1.*
 %doc %{_mandir}/man1/btmon.1*
