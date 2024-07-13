@@ -35,6 +35,7 @@ Patch3:		ell-0.39-fix-build-with-clang.patch
 #Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
 
 BuildRequires:	python3dist(docutils)
+BuildRequires:	python3dist(pygments)
 BuildRequires:	pkgconfig(readline)
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	cups-devel
@@ -117,6 +118,8 @@ These are the official Bluetooth communication libraries for Linux.
 %doc %{_mandir}/man1/l2ping.1*
 %doc %{_mandir}/man1/rctest.1*
 %doc %{_mandir}/man5/org.bluez.*
+%doc %{_mandir}/man7/l2cap.7.*
+%doc %{_mandir}/man7/rfcomm.7.*
 %doc %{_mandir}/man8/*
 %config(noreplace) %{_sysconfdir}/sysconfig/*
 %config(noreplace) %{_sysconfdir}/bluetooth
