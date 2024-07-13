@@ -35,6 +35,7 @@ Patch3:		ell-0.39-fix-build-with-clang.patch
 #Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
 
 BuildRequires:	python3dist(docutils)
+BuildRequires:	python3dist(pygments)
 BuildRequires:	pkgconfig(readline)
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	cups-devel
