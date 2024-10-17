@@ -17,7 +17,7 @@ Version:	5.78
 Release:	1
 License:	GPLv2+
 Group:		Communications
-URL:		http://www.bluez.org/
+URL:		https://www.bluez.org/
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.xz
 Source6:	pand.conf
 Source7:	dund.conf
