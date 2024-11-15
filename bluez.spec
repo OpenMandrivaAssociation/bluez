@@ -13,12 +13,12 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.78
+Version:	5.79
 Release:	1
 License:	GPLv2+
 Group:		Communications
 URL:		https://www.bluez.org/
-Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.xz
+Source0:	https://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.xz
 Source6:	pand.conf
 Source7:	dund.conf
 Source8:	hidd.conf
