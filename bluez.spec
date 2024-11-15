@@ -13,12 +13,12 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.78
+Version:	5.79
 Release:	1
 License:	GPLv2+
 Group:		Communications
 URL:		https://www.bluez.org/
-Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.xz
+Source0:	https://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.xz
 Source6:	pand.conf
 Source7:	dund.conf
 Source8:	hidd.conf
@@ -101,6 +101,7 @@ These are the official Bluetooth communication libraries for Linux.
 %{_presetdir}/86-bluetooth.preset
 %{_unitdir}/bluetooth.service
 %{_unitdir}/bluetooth-mesh.service
+%{_userunitdir}/mpris-proxy.service
 %{_userunitdir}/obex.service
 %{_userunitdir}/dbus-org.bluez.obex.service
 %doc %{_mandir}/man1/bluetoothctl*
@@ -118,6 +119,7 @@ These are the official Bluetooth communication libraries for Linux.
 %doc %{_mandir}/man1/l2ping.1*
 %doc %{_mandir}/man1/rctest.1*
 %doc %{_mandir}/man5/org.bluez.*
+%doc %{_mandir}/man7/hci.7.*
 %doc %{_mandir}/man7/l2cap.7.*
 %doc %{_mandir}/man7/rfcomm.7.*
 %doc %{_mandir}/man8/*
