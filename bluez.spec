@@ -47,7 +47,8 @@ BuildRequires:	pkgconfig(libcap-ng)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(libical)
-BuildRequires:	pkgconfig(udev) >= 186
+BuildRequires:	pkgconfig(udev) >= 196
+BuildRequires:	pkgconfig(libcap)
 BuildRequires:	pkgconfig(systemd)
 # For unitdir macros
 BuildRequires:	systemd-rpm-macros
