@@ -35,7 +35,6 @@ Patch3:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
 
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	libtool-base
 BuildRequires:	slibtool
 BuildRequires:	make
 BuildRequires:	python3dist(docutils)
@@ -82,6 +81,7 @@ These are the official Bluetooth communication libraries for Linux.
 
 %files
 %{_bindir}/avinfo
+%{_bindir}/btmgmt
 %{_bindir}/ciptool
 %{_bindir}/hcitool
 %{_bindir}/gatttool
@@ -276,10 +276,16 @@ applications which will use libraries from %{name}.
 %{_prefix}/lib/pkgconfig/bluez.pc
 %endif
 
+# Out-of-tree builds still embed LIBTOOL=$(SHELL) $(top_builddir)/libtool.
+# After slibtoolize, that script is a no-op (/usr/bin/true stub ltmain.sh), so
+# override it the same way %%buildsystem_autotools_* does.
+%define bluez_libtool LIBTOOL=slibtool-shared
+
 %prep
 %autosetup -p1
 
-libtoolize -f -c
+# %%configure's %%config_update runs slibtoolize; autoreconf regenerates
+# config.h.in (autoheader) and the rest of the autotools files after patches.
 autoreconf -fi
 
 export CONFIGURE_TOP="$(pwd)"
@@ -287,26 +293,27 @@ export CONFIGURE_TOP="$(pwd)"
 %if %{with compat32}
 mkdir build32
 cd build32
+# Only libbluetooth is packaged for compat32. Skip tools/daemons so we do not
+# need biarch -L/usr/lib fixups for hardcoded -lreadline/-ljson-c LDADDs that
+# GNU libtool used to satisfy via sys_lib_search_path_spec.
 %configure32 \
+	--enable-library \
+	--disable-tools \
+	--disable-monitor \
+	--disable-mesh \
+	--enable-obex \
+	--disable-client \
+	--enable-cups \
+	--enable-systemd \
+	--enable-udev \
+	--enable-datafiles \
+	--disable-manpages \
+	--enable-experimental \
+	--disable-deprecated \
 	--enable-sixaxis \
-	--enable-pie \
 	--enable-health \
 	--enable-nfc \
-	--enable-tools \
-	--enable-library \
-	--enable-usb \
-	--enable-threads \
-	--enable-monitor \
-	--enable-mesh \
-	--enable-obex \
-	--enable-client \
-	--enable-systemd \
-	--with-systemdsystemunitdir=%{_unitdir} \
-	--with-systemduserunitdir=%{_userunitdir} \
-	--with-udevdir=$(dirname %{_udevrulesdir}) \
-	--enable-datafiles \
-	--enable-experimental \
-	--enable-deprecated
+	--disable-hid2hci
 cd ..
 %endif
 
@@ -345,21 +352,18 @@ touch ell/shared
 
 %build
 %if %{with compat32}
-# FIXME workaround for Makefiles being broken with external ell
-mkdir -p build32/ell
-touch build32/ell/shared
-%make_build -C build32
+%make_build -C build32 %{bluez_libtool}
 %endif
 # FIXME workaround for Makefiles being broken with external ell
 mkdir -p build/ell
 touch build/ell/shared
-%make_build -C build
+%make_build -C build %{bluez_libtool}
 
 %install
 %if %{with compat32}
-%make_install -C build32
+%make_install -C build32 %{bluez_libtool}
 %endif
-%make_install -C build
+%make_install -C build %{bluez_libtool}
 
 mkdir -p %{buildroot}%{_sysconfdir}/bluetooth
 printf '%s\n' '1234' > %{buildroot}%{_sysconfdir}/bluetooth/pin
@@ -371,14 +375,16 @@ install -m644 %{SOURCE7} -D %{buildroot}%{_sysconfdir}/sysconfig/dund
 install -m644 %{SOURCE8} -D %{buildroot}%{_sysconfdir}/sysconfig/hidd
 install -m644 %{SOURCE9} -D %{buildroot}%{_sysconfdir}/sysconfig/rfcomm
 
-# "make install" fails to install gatttool, necessary for Bluetooth Low Energy
-# Red Hat Bugzilla bug #1141909
-# Debian bug #720486
-install -m0755 build/attrib/gatttool %{buildroot}%{_bindir}
+# gatttool, avinfo and btmgmt are noinst_PROGRAMS (not installed by
+# "make install"). Use slibtool install mode so the real binary under
+# .libs/ is installed rather than the uninstalled wrapper script.
+# Red Hat Bugzilla bugs #1141909, #1699680; Debian bug #720486
+slibtool-shared --mode=install install -m0755 build/attrib/gatttool %{buildroot}%{_bindir}/gatttool
+slibtool-shared --mode=install install -m0755 build/tools/avinfo %{buildroot}%{_bindir}/avinfo
+slibtool-shared --mode=install install -m0755 build/tools/btmgmt %{buildroot}%{_bindir}/btmgmt
 
-# "make install" fails to install avinfo
-# Red Hat Bugzilla bug #1699680
-install -m0755 build/tools/avinfo %{buildroot}%{_bindir}
+# btmgmt.1 is listed in manual_pages but not man_MANS, so make install skips it.
+install -m0644 -D doc/btmgmt.1 %{buildroot}%{_mandir}/man1/btmgmt.1
 
 # Remove the cups backend from libdir, and install it in /usr/lib whatever the install
 #if "%{_lib}" == "lib64"
