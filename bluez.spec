@@ -53,6 +53,7 @@ BuildRequires:	pkgconfig(libical)
 BuildRequires:	pkgconfig(udev) >= 196
 BuildRequires:	pkgconfig(libcap)
 BuildRequires:	pkgconfig(systemd)
+BuildRequires:	pkgconfig(sltdl)
 # For unitdir macros
 BuildRequires:	systemd-rpm-macros
 %if %{with compat32}
