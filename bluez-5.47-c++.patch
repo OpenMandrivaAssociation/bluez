@@ -1,6 +1,6 @@
---- bluez-5.47/lib/bluetooth/bluetooth.h.omv~	2017-10-11 00:46:42.820281667 +0200
-+++ bluez-5.47/lib/bluetooth/bluetooth.h	2017-10-11 00:49:30.000246915 +0200
-@@ -307,9 +307,19 @@ typedef struct {
+--- bluez-5.86/lib/bluetooth/bluetooth.h.omv~	2026-02-08 22:26:40.000000000 +0100
++++ bluez-5.86/lib/bluetooth/bluetooth.h	2026-07-02 15:50:30.000000000 +0200
+@@ -428,9 +428,19 @@
  #define BDADDR_LE_PUBLIC       0x01
  #define BDADDR_LE_RANDOM       0x02
  

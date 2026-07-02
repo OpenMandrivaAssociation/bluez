@@ -13,7 +13,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.84
+Version:	5.86
 Release:	1
 License:	GPLv2+
 Group:		Communications
@@ -25,14 +25,13 @@ Source8:	hidd.conf
 Source9:	rfcomm.conf
 Source10:	bluez-uinput.modules
 
+# C++ consumers cannot take the address of a compound-literal temporary
 Patch1:		bluez-5.47-c++.patch
-## Ubuntu patches
+# Ubuntu: Logitech diNovo Edge firmware exposes the HCI via hidraw, not hiddev
 Patch2:		0001-work-around-Logitech-diNovo-Edge-keyboard-firmware-i.patch
-# Non-upstream
-Patch3:		ell-0.39-fix-build-with-clang.patch
-# Upstream's logic has changed so needs a rebase
+# Ubuntu: reject relative paths from the OBEX agent; use GLib path helpers
 # https://github.com/hadess/bluez/commits/obex-5.46
-#Patch4:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
+Patch3:		0001-obex-Use-GLib-helper-function-to-manipulate-paths.patch
 
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -341,16 +340,19 @@ cd build
 # of stuff...
 
 # FIXME workaround for Makefiles being broken with external ell
-mkdir ell
+mkdir -p ell
 touch ell/shared
 
 %build
 %if %{with compat32}
 # FIXME workaround for Makefiles being broken with external ell
-mkdir build32/ell
+mkdir -p build32/ell
 touch build32/ell/shared
 %make_build -C build32
 %endif
+# FIXME workaround for Makefiles being broken with external ell
+mkdir -p build/ell
+touch build/ell/shared
 %make_build -C build
 
 %install
