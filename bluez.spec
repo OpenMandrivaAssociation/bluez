@@ -285,6 +285,8 @@ applications which will use libraries from %{name}.
 %prep
 %autosetup -p1
 
+sed -i -e '/AM_INIT_AUTOMAKE/iLT_INIT' configure.ac
+
 # %%configure's %%config_update runs slibtoolize; autoreconf regenerates
 # config.h.in (autoheader) and the rest of the autotools files after patches.
 autoreconf -fi
