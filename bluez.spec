@@ -13,7 +13,7 @@
 
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
-Version:	5.86
+Version:	5.87
 Release:	1
 License:	GPLv2+
 Group:		Communications
