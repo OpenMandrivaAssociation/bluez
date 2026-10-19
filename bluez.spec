@@ -37,8 +37,8 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	slibtool
 BuildRequires:	make
-BuildRequires:	python3dist(docutils)
-BuildRequires:	python3dist(pygments)
+BuildRequires:	python%{pyver}dist(docutils)
+BuildRequires:	python%{pyver}dist(pygments)
 BuildRequires:	pkgconfig(readline)
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	cups-devel
