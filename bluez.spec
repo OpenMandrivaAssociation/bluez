@@ -289,7 +289,8 @@ sed -i -e '/AM_INIT_AUTOMAKE/iLT_INIT' configure.ac
 
 # %%configure's %%config_update runs slibtoolize; autoreconf regenerates
 # config.h.in (autoheader) and the rest of the autotools files after patches.
-autoreconf -fi
+# slibtool's LT_INIT lives in /usr/share/slibtool, not aclocal's default path
+autoreconf -fi -I /usr/share/slibtool
 
 export CONFIGURE_TOP="$(pwd)"
 
