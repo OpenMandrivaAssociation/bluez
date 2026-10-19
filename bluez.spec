@@ -14,7 +14,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	5.87
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Communications
 URL:		https://www.bluez.org/
@@ -57,6 +57,13 @@ BuildRequires:	pkgconfig(sltdl)
 # For unitdir macros
 BuildRequires:	systemd-rpm-macros
 %if %{with compat32}
+# clang 23 -m32 links compiler-rt, not libgcc. The i386 builtins live
+# in the cross-i686 clang package, with matching libc/gcc/binutils sysroot.
+BuildRequires:	libc6
+BuildRequires:	cross-i686-openmandriva-linux-gnu-clang
+BuildRequires:	cross-i686-openmandriva-linux-gnu-libc
+BuildRequires:	cross-i686-openmandriva-linux-gnu-binutils
+BuildRequires:	cross-i686-openmandriva-linux-gnu-gcc
 BuildRequires:	devel(libdbus-1)
 BuildRequires:	devel(libglib-2.0)
 BuildRequires:	devel(libpcre)
