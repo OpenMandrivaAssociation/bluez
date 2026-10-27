@@ -14,7 +14,7 @@
 Name:		bluez
 Summary:	Official Linux Bluetooth protocol stack
 Version:	5.87
-Release:	2
+Release:	3
 License:	GPLv2+
 Group:		Communications
 URL:		https://www.bluez.org/
@@ -50,6 +50,7 @@ BuildRequires:	pkgconfig(libcap-ng)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(libical)
+BuildRequires:	pkgconfig(libicalvcal)
 BuildRequires:	pkgconfig(udev) >= 196
 BuildRequires:	pkgconfig(libcap)
 BuildRequires:	pkgconfig(systemd)
